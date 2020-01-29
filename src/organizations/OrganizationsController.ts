@@ -18,8 +18,8 @@ export class OrganizationsController {
     @Post('/create')
     public create(@Principal() principal: User, @Body() organizationCreate: OrganizationCreate): Promise<Organization> {
 
-        return this.organizationsService.create(principal, organizationCreate);
-
+        // return this.organizationsService.create(principal, organizationCreate);
+        return null;
     }
 
 }

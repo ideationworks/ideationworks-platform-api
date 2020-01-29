@@ -42,7 +42,14 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
 
         } else {
 
-            response.status(exception.status).json(exception.message);
+            if (exception.status && exception.message) {
+
+                response.status(exception.status).json(exception.message);
+
+            } else {
+
+                response.status(500).json('oops! something went wrong :(');
+            }
 
         }
 

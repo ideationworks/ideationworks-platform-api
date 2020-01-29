@@ -8,3 +8,7 @@ docker-compose up -d
 ```bash
 npm run start:dev
 ```
+
+# Swagger UI
+
+http://localhost:3000/api

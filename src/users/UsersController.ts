@@ -1,9 +1,24 @@
-import { Body, Controller, HttpException, HttpStatus, Post, Response, UnauthorizedException } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags }                                                             from '@nestjs/swagger';
-import * as jwt                                                                               from 'jsonwebtoken';
-import { UserLogin }                                                                          from './UserLogin';
-import { UserRegister }                                                                       from './UserRegister';
-import { UsersService }                                                                       from './UsersService';
+import {
+    Body,
+    ClassSerializerInterceptor,
+    Controller,
+    Get,
+    HttpException,
+    HttpStatus,
+    Post,
+    Response,
+    UnauthorizedException,
+    UseGuards,
+    UseInterceptors
+}                                 from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import * as jwt                   from 'jsonwebtoken';
+import { Principal }              from '../_lib/Principal';
+import { PrincipalGuard }         from '../_lib/PrincipalGuard';
+import { User }                   from './User';
+import { UserLogin }              from './UserLogin';
+import { UserRegister }           from './UserRegister';
+import { UsersService }           from './UsersService';
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -47,6 +62,13 @@ export class UsersController {
 
     }
 
+    /**
+     * Creates a new user.
+     *
+     * @param {UserRegister} userRegister
+     *
+     * @returns {Promise<string>}
+     */
     @Post('/register')
     public async register(@Body() userRegister: UserRegister): Promise<string> {
 
@@ -63,6 +85,22 @@ export class UsersController {
             throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
 
         }
+
+    }
+
+    /**
+     * Retrieve the current logged in users profile.
+     *
+     * @param {Principal} principal
+     *
+     * @returns {Promise<User>}
+     */
+    @Get('/my')
+    @UseGuards(PrincipalGuard)
+    @UseInterceptors(ClassSerializerInterceptor)
+    public async getMyProfile(@Principal() principal: User): Promise<User> {
+
+        return this.usersService.getUserById(principal.id);
 
     }
 
