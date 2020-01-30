@@ -46,4 +46,7 @@ export class User extends Base {
     @Column()
     public email?: string;
 
+    @Column({ nullable: true, length: 255 })
+    public forgotToken: string;
+
 }

@@ -1,7 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository }                  from '@nestjs/typeorm';
 import * as bcrypt                           from 'bcrypt';
+import { Random }                            from '../_lib/common/Random';
 import { ResourceAlreadyExistsException }    from '../_lib/exceptions/ResourceAlreadyExistsException';
+import { ResourceNotFoundException }         from '../_lib/exceptions/ResourceNotFoundException';
+import { Sendgrid }                          from '../_lib/mail/Sendgrid';
 import { Organization }                      from '../organizations/Organization';
 import { OrganizationsService }              from '../organizations/OrganizationsService';
 import { User }                              from './User';
@@ -149,6 +152,68 @@ export class UsersService {
         _user.password = userRegister.password;
 
         return this.create(_user);
+
+    }
+
+    /**
+     * Send a password reset email and token.
+     *
+     * @param {string} email
+     *
+     * @returns {Promise<boolean>}
+     */
+    public async resetSend(email: string): Promise<boolean> {
+
+        const user = await this.getByEmail(email);
+
+        if (user) {
+
+            user.forgotToken = Random.getRandomCryptoString(100);
+
+            await this.userRepository.save(user);
+
+            Sendgrid.send(user.email, 'support@ideation.works', 'd-1ff9d851587b494ea91c14da82d8f9b4', {
+
+                subject: 'Reset your password',
+                link: user.forgotToken
+
+            });
+
+            return true;
+
+        } else {
+
+            throw new ResourceNotFoundException('email does not exist');
+
+        }
+
+    }
+
+    /**
+     * Changes password if token matches.
+     *
+     * @param {string} token
+     * @param {string} password
+     *
+     * @returns {Promise<boolean>}
+     */
+    public async resetSubmit(token: string, password: string): Promise<boolean> {
+
+        const user = await this.userRepository.findOne({ where: { forgotToken: token } });
+
+        if (user) {
+
+            user.password = password;
+
+            await this.userRepository.save(user);
+
+            return true;
+
+        } else {
+
+            throw new ResourceNotFoundException('could not locate token');
+
+        }
 
     }
 

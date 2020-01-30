@@ -6,6 +6,7 @@ import {
     HttpException,
     HttpStatus,
     Post,
+    Query,
     Response,
     UnauthorizedException,
     UseGuards,
@@ -17,6 +18,7 @@ import { Principal }              from '../_lib/Principal';
 import { PrincipalGuard }         from '../_lib/PrincipalGuard';
 import { User }                   from './User';
 import { UserLogin }              from './UserLogin';
+import { UserPassword }           from './UserPassword';
 import { UserRegister }           from './UserRegister';
 import { UsersService }           from './UsersService';
 
@@ -101,6 +103,35 @@ export class UsersController {
     public async getMyProfile(@Principal() principal: User): Promise<User> {
 
         return this.usersService.getUserById(principal.id);
+
+    }
+
+    /**
+     * Sends a reset password email.
+     *
+     * @param {string} email
+     *
+     * @returns {Promise<boolean>}
+     */
+    @Post('/reset/send')
+    public forgotSend(@Query('email')  email: string): Promise<boolean> {
+
+        return this.usersService.resetSend(email);
+
+    }
+
+    /**
+     * Change password if token matches.
+     *
+     * @param {string} token
+     * @param {UserPassword} userPassword
+     *
+     * @returns {Promise<boolean>}
+     */
+    @Post('/reset/submit')
+    public resetSubmit(@Query('token') token: string, @Body() userPassword: UserPassword): Promise<boolean> {
+
+        return this.usersService.resetSubmit(token, userPassword.password);
 
     }
 
