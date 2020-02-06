@@ -9,6 +9,10 @@ import { Idea }                    from './ideas/Idea';
 import { IdeaRepository }          from './ideas/IdeaRepository';
 import { IdeasController }         from './ideas/IdeasController';
 import { IdeasService }            from './ideas/IdeasService';
+import { IdeaVote }                from './ideas/votes/IdeaVote';
+import { IdeaVoteRespository }     from './ideas/votes/IdeaVoteRespository';
+import { IdeaVotesController }     from './ideas/votes/IdeaVotesController';
+import { IdeaVotesService }        from './ideas/votes/IdeaVotesService';
 import { Organization }            from './organizations/Organization';
 import { OrganizationRepository }  from './organizations/OrganizationRepository';
 import { OrganizationsController } from './organizations/OrganizationsController';
@@ -38,6 +42,7 @@ import { UsersService }            from './users/UsersService';
 
                 Category,
                 Idea,
+                IdeaVote,
                 User,
                 Organization,
 
@@ -49,6 +54,7 @@ import { UsersService }            from './users/UsersService';
 
             CategoryRepository,
             IdeaRepository,
+            IdeaVoteRespository,
             UserRepository,
             OrganizationRepository
 
@@ -60,6 +66,7 @@ import { UsersService }            from './users/UsersService';
 
         CategoriesController,
         IdeasController,
+        IdeaVotesController,
         OrganizationsController,
         UsersController
 
@@ -69,6 +76,7 @@ import { UsersService }            from './users/UsersService';
 
         CategoriesService,
         IdeasService,
+        IdeaVotesService,
         OrganizationsService,
         UsersService
 

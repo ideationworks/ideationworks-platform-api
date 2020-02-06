@@ -15,4 +15,7 @@ export class Idea extends Base {
     @Column()
     public description: string;
 
+    public votesDown?: number;
+    public votesUp?: number;
+
 }
