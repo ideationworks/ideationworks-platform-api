@@ -25,6 +25,7 @@ async function bootstrap() {
     const options = new DocumentBuilder().setTitle('ideation.works')
                                          .setDescription('ideation.works REST API')
                                          .setVersion('1.0')
+                                         .addTag('categories')
                                          .addTag('ideas')
                                          .addTag('users')
                                          .addTag('organizations')

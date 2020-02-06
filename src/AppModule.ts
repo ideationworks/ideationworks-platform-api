@@ -1,6 +1,10 @@
 import { Module }                  from '@nestjs/common';
 import { JwtModule }               from '@nestjs/jwt';
 import { TypeOrmModule }           from '@nestjs/typeorm';
+import { CategoriesController }    from './categories/CategoriesController';
+import { CategoriesService }       from './categories/CategoriesService';
+import { Category }                from './categories/Category';
+import { CategoryRepository }      from './categories/CategoryRepository';
 import { Organization }            from './organizations/Organization';
 import { OrganizationRepository }  from './organizations/OrganizationRepository';
 import { OrganizationsController } from './organizations/OrganizationsController';
@@ -28,6 +32,7 @@ import { UsersService }            from './users/UsersService';
             keepConnectionAlive: true,
             entities: [
 
+                Category,
                 User,
                 Organization,
 
@@ -37,6 +42,7 @@ import { UsersService }            from './users/UsersService';
 
         TypeOrmModule.forFeature([
 
+            CategoryRepository,
             UserRepository,
             OrganizationRepository
 
@@ -46,6 +52,7 @@ import { UsersService }            from './users/UsersService';
 
     controllers: [
 
+        CategoriesController,
         OrganizationsController,
         UsersController
 
@@ -53,6 +60,7 @@ import { UsersService }            from './users/UsersService';
 
     providers: [
 
+        CategoriesService,
         OrganizationsService,
         UsersService
 
