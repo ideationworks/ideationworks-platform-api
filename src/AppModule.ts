@@ -5,6 +5,10 @@ import { CategoriesController }    from './categories/CategoriesController';
 import { CategoriesService }       from './categories/CategoriesService';
 import { Category }                from './categories/Category';
 import { CategoryRepository }      from './categories/CategoryRepository';
+import { Idea }                    from './ideas/Idea';
+import { IdeaRepository }          from './ideas/IdeaRepository';
+import { IdeasController }         from './ideas/IdeasController';
+import { IdeasService }            from './ideas/IdeasService';
 import { Organization }            from './organizations/Organization';
 import { OrganizationRepository }  from './organizations/OrganizationRepository';
 import { OrganizationsController } from './organizations/OrganizationsController';
@@ -33,6 +37,7 @@ import { UsersService }            from './users/UsersService';
             entities: [
 
                 Category,
+                Idea,
                 User,
                 Organization,
 
@@ -43,6 +48,7 @@ import { UsersService }            from './users/UsersService';
         TypeOrmModule.forFeature([
 
             CategoryRepository,
+            IdeaRepository,
             UserRepository,
             OrganizationRepository
 
@@ -53,6 +59,7 @@ import { UsersService }            from './users/UsersService';
     controllers: [
 
         CategoriesController,
+        IdeasController,
         OrganizationsController,
         UsersController
 
@@ -61,6 +68,7 @@ import { UsersService }            from './users/UsersService';
     providers: [
 
         CategoriesService,
+        IdeasService,
         OrganizationsService,
         UsersService
 

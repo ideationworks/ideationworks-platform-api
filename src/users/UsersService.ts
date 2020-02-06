@@ -1,17 +1,17 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { InjectRepository }                  from '@nestjs/typeorm';
-import * as bcrypt                           from 'bcrypt';
-import { Random }                            from '../_lib/common/Random';
-import { ResourceAlreadyExistsException }    from '../_lib/exceptions/ResourceAlreadyExistsException';
-import { ResourceNotFoundException }         from '../_lib/exceptions/ResourceNotFoundException';
-import { Sendgrid }                          from '../_lib/mail/Sendgrid';
-import { Organization }                      from '../organizations/Organization';
-import { OrganizationsService }              from '../organizations/OrganizationsService';
-import { User }                              from './User';
-import { UserLogin }                         from './UserLogin';
-import { UserRegister }                      from './UserRegister';
-import { UserRepository }                    from './UserRepository';
-import { UserStatus }                        from './UserStatus';
+import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
+import { Random } from '../_lib/common/Random';
+import { ResourceAlreadyExistsException } from '../_lib/exceptions/ResourceAlreadyExistsException';
+import { ResourceNotFoundException } from '../_lib/exceptions/ResourceNotFoundException';
+import { Sendgrid } from '../_lib/mail/Sendgrid';
+import { Organization } from '../organizations/Organization';
+import { OrganizationsService } from '../organizations/OrganizationsService';
+import { User } from './User';
+import { UserLogin } from './UserLogin';
+import { UserRegister } from './UserRegister';
+import { UserRepository } from './UserRepository';
+import { UserStatus } from './UserStatus';
 
 @Injectable()
 export class UsersService {
@@ -57,7 +57,7 @@ export class UsersService {
 
             const result = await this.userRepository.findOne({
 
-                where: [ { id } ]
+                where: [ {id} ]
 
             });
 
@@ -88,7 +88,7 @@ export class UsersService {
 
         return this.userRepository.findOne({
 
-            where: [ { email } ]
+            where: [ {email} ]
 
         });
 
@@ -121,7 +121,6 @@ export class UsersService {
 
     }
 
-
     /**
      * Registers a new user by creating both the organization and user.
      *
@@ -150,8 +149,27 @@ export class UsersService {
         _user.organization = organization;
         _user.email = userRegister.email;
         _user.password = userRegister.password;
+        _user.confirmToken = Random.getRandomCryptoString(100);
 
-        return this.create(_user);
+        //
+        // Save the _user object to the database.
+        //
+        const user = await this.create(_user);
+
+        console.log('User registered!');
+        console.log(user);
+
+        //
+        // Send the welcome email with the confirm token.
+        //
+        Sendgrid.send(user.email, 'support@ideation.works', 'd-b380c9ca4c2e4cc9973e82bbc91af953', {
+
+            subject: 'Confirm your ideation account!',
+            token: user.confirmToken
+
+        });
+
+        return user;
 
     }
 
@@ -199,7 +217,7 @@ export class UsersService {
      */
     public async resetSubmit(token: string, password: string): Promise<boolean> {
 
-        const user = await this.userRepository.findOne({ where: { forgotToken: token } });
+        const user = await this.userRepository.findOne({where: {forgotToken: token}});
 
         if (user) {
 
