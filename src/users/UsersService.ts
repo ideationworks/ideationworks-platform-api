@@ -12,6 +12,7 @@ import { UserLogin } from './UserLogin';
 import { UserRegister } from './UserRegister';
 import { UserRepository } from './UserRepository';
 import { UserStatus } from './UserStatus';
+import { UserPassword } from './UserPassword';
 
 @Injectable()
 export class UsersService {
@@ -232,6 +233,21 @@ export class UsersService {
             throw new ResourceNotFoundException('could not locate token');
 
         }
+
+    }
+
+    /**
+     * changing users password
+     * @param user
+     * @param newPassword
+     */
+    public async changePassword(user: User, newPassword: UserPassword): Promise<User> {
+
+        const userRecord = await this.getByEmail(user.email);
+        
+        userRecord.password = newPassword.password;
+
+        return this.userRepository.save(userRecord);
 
     }
 
