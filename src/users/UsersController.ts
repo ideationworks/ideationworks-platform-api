@@ -11,16 +11,16 @@ import {
     UnauthorizedException,
     UseGuards,
     UseInterceptors
-}                                 from '@nestjs/common';
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import * as jwt                   from 'jsonwebtoken';
-import { Principal }              from '../_lib/Principal';
-import { PrincipalGuard }         from '../_lib/PrincipalGuard';
-import { User }                   from './User';
-import { UserLogin }              from './UserLogin';
-import { UserPassword }           from './UserPassword';
-import { UserRegister }           from './UserRegister';
-import { UsersService }           from './UsersService';
+import * as jwt from 'jsonwebtoken';
+import { Principal } from '../_lib/Principal';
+import { PrincipalGuard } from '../_lib/PrincipalGuard';
+import { User } from './User';
+import { UserLogin } from './UserLogin';
+import { UserPassword } from './UserPassword';
+import { UserRegister } from './UserRegister';
+import { UsersService } from './UsersService';
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -52,9 +52,9 @@ export class UsersController {
 
         if (user) {
 
-            const token = jwt.sign({ id: user.id }, UsersController.JWT_TOKEN, { expiresIn: UsersController.JWT_EXPIRY });
+            const token = jwt.sign({id: user.id}, UsersController.JWT_TOKEN, {expiresIn: UsersController.JWT_EXPIRY});
 
-            return response.status(HttpStatus.OK).json({ expiresIn: UsersController.JWT_EXPIRY, token });
+            return response.status(HttpStatus.OK).json({expiresIn: UsersController.JWT_EXPIRY, token});
 
         } else {
 
@@ -132,6 +132,14 @@ export class UsersController {
     public resetSubmit(@Query('token') token: string, @Body() userPassword: UserPassword): Promise<boolean> {
 
         return this.usersService.resetSubmit(token, userPassword.password);
+
+    }
+
+    @Post('/changePassword')
+    @UseGuards(PrincipalGuard)
+    public changePassword(@Principal() user: User, @Body() changePassword: UserPassword): Promise<User> {
+
+        return this.usersService.changePassword(user, changePassword);
 
     }
 
