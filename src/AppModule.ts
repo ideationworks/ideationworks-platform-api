@@ -21,6 +21,7 @@ import { User }                    from './users/User';
 import { UserRepository }          from './users/UserRepository';
 import { UsersController }         from './users/UsersController';
 import { UsersService }            from './users/UsersService';
+import { AuthenticationService }   from './_lib/authentication/AuthenticationService';
 
 @Module({
 
@@ -78,7 +79,8 @@ import { UsersService }            from './users/UsersService';
         IdeasService,
         IdeaVotesService,
         OrganizationsService,
-        UsersService
+        UsersService,
+        AuthenticationService,
 
     ],
 
