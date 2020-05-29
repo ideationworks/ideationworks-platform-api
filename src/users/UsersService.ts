@@ -157,7 +157,7 @@ export class UsersService {
         _user.organization = organization;
         _user.displayName = userRegister.displayName;
         _user.firstName = userRegister.firstName;
-        _user.firstName = userRegister.lastName;
+        _user.lastName = userRegister.lastName;
         _user.email = userRegister.email;
         _user.password = userRegister.password;
         _user.confirmToken = Random.getRandomCryptoString(100);

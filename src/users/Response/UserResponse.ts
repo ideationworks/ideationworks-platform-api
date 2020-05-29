@@ -11,8 +11,10 @@ export class UserResponse {
     displayName: String;
 
     @ApiProperty()
+    @Expose()
     firstName: String;
 
     @ApiProperty()
+    @Expose()
     lastName: String;
 }
