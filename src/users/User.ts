@@ -35,12 +35,16 @@ export class User extends Base {
     public status?: UserStatus;
 
     @ApiProperty()
-    @Column({nullable: true})
-    public firstname?: string;
+    @Column()
+    public displayName?: string;
 
     @ApiProperty()
     @Column({nullable: true})
-    public lastname?: string;
+    public firstName?: string;
+
+    @ApiProperty()
+    @Column({nullable: true})
+    public lastName?: string;
 
     @ApiProperty()
     @Column()
