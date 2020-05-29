@@ -18,7 +18,7 @@ import { UserPassword } from './UserPassword';
 export class UsersService {
 
     public constructor(@InjectRepository(UserRepository) private userRepository: UserRepository,
-                       private organizationsService: OrganizationsService) {
+        private organizationsService: OrganizationsService) {
 
     }
 
@@ -130,6 +130,13 @@ export class UsersService {
      * @returns {Promise<string>}
      */
     public async register(userRegister: UserRegister): Promise<User> {
+        
+        //
+        // Verify that the email is not already in use
+        //
+        const userFound = await this.getByEmail(userRegister.email);
+
+        if (userFound) throw new ResourceAlreadyExistsException(`The email ${userRegister.email} is already in use`);
 
         //
         // First create organization so we can later assignToUser it to the
@@ -137,7 +144,7 @@ export class UsersService {
         //
         const _organization: Organization = new Organization();
 
-        _organization.name = `${ userRegister.email }'s team`;
+        _organization.name = `${userRegister.email}'s team`;
 
         let organization: Organization = await this.organizationsService.create(_organization);
 
@@ -148,6 +155,9 @@ export class UsersService {
 
         _user.status = UserStatus.PENDING_CONFIRMATION;
         _user.organization = organization;
+        _user.displayName = userRegister.displayName;
+        _user.firstName = userRegister.firstName;
+        _user.firstName = userRegister.lastName;
         _user.email = userRegister.email;
         _user.password = userRegister.password;
         _user.confirmToken = Random.getRandomCryptoString(100);
@@ -156,9 +166,6 @@ export class UsersService {
         // Save the _user object to the database.
         //
         const user = await this.create(_user);
-
-        console.log('User registered!');
-        console.log(user);
 
         //
         // Send the welcome email with the confirm token.
@@ -244,7 +251,7 @@ export class UsersService {
     public async changePassword(user: User, newPassword: UserPassword): Promise<User> {
 
         const userRecord = await this.getByEmail(user.email);
-        
+
         userRecord.password = newPassword.password;
 
         return this.userRepository.save(userRecord);

@@ -12,8 +12,7 @@ import {
     UseGuards,
     UseInterceptors
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import * as jwt from 'jsonwebtoken';
+import { ApiBearerAuth, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { Principal } from '../_lib/Principal';
 import { PrincipalGuard } from '../_lib/PrincipalGuard';
 import { User } from './User';
@@ -21,17 +20,17 @@ import { UserLogin } from './UserLogin';
 import { UserPassword } from './UserPassword';
 import { UserRegister } from './UserRegister';
 import { UsersService } from './UsersService';
+import { AuthenticationService } from '../_lib/authentication/AuthenticationService';
+import { UserRegisterResponse } from './Response/UserRegisterResponse';
 
 @ApiTags('users')
 @ApiBearerAuth()
 @Controller('/users')
 export class UsersController {
 
-    public static JWT_TOKEN = 'change';
-    public static JWT_EXPIRY = 86400;
-
-    public constructor(private usersService: UsersService) {
-
+    public constructor(
+        private usersService: UsersService,
+        private authenticationService: AuthenticationService) {
     }
 
     /**
@@ -52,9 +51,9 @@ export class UsersController {
 
         if (user) {
 
-            const token = jwt.sign({id: user.id}, UsersController.JWT_TOKEN, {expiresIn: UsersController.JWT_EXPIRY});
+            const token = this.authenticationService.getSignedJWT({ id: user.id });
 
-            return response.status(HttpStatus.OK).json({expiresIn: UsersController.JWT_EXPIRY, token});
+            return response.status(HttpStatus.OK).json(token);
 
         } else {
 
@@ -72,21 +71,17 @@ export class UsersController {
      * @returns {Promise<string>}
      */
     @Post('/register')
-    public async register(@Body() userRegister: UserRegister): Promise<string> {
+    @ApiResponse({ status: 201, type: UserRegisterResponse })
+    public async register(@Body() userRegister: UserRegister): Promise<UserRegisterResponse> {
+
 
         const user = await this.usersService.register(userRegister);
 
-        console.log(user);
+        if (!user) throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
 
-        if (user) {
+        const token = this.authenticationService.getSignedJWT({ id: user.id });
 
-            return 'OK';
-
-        } else {
-
-            throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-
-        }
+        return UserRegisterResponse.create({ user, ...token });
 
     }
 

@@ -1,5 +1,5 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from '@nestjs/common';
-import { Request, Response }                                 from 'express';
+import { Request, Response } from 'express';
 
 @Catch()
 export class GlobalExceptionsFilter implements ExceptionFilter {
@@ -11,7 +11,7 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
         const request = ctx.getRequest<Request>();
         const clazz = exception.constructor.name;
 
-        console.error(`GlobalExceptionsFilter.catch(): ${ clazz }: ${ JSON.stringify(exception) }`);
+        console.error(`GlobalExceptionsFilter.catch(): ${clazz}: ${JSON.stringify(exception)}`);
 
         if (clazz === 'UnauthorizedException') {
 
@@ -31,6 +31,10 @@ export class GlobalExceptionsFilter implements ExceptionFilter {
         } else if (clazz === 'ResourceForbiddenException') {
 
             response.status(exception.status).json(exception);
+
+        } else if (clazz === 'ResourceAlreadyExistsException') {
+
+            response.status(exception.status).json({ statusCode: exception.status, message: exception.message });
 
         } else if (clazz === 'QueryFailedError') {
 
