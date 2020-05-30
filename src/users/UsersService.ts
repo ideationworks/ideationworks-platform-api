@@ -142,42 +142,42 @@ export class UsersService {
         // First create organization so we can later assignToUser it to the
         // user record that we'll created.
         //
-        const _organization: Organization = new Organization();
+        const organization: Organization = new Organization();
 
-        _organization.name = `${userRegister.email}'s team`;
+        organization.name = `${userRegister.email}'s team`;
 
-        let organization: Organization = await this.organizationsService.create(_organization);
+        const newOrganization: Organization = await this.organizationsService.create(organization);
 
         //
         // Create user assigning the organization to it.
         //
-        const _user: User = new User();
+        const user: User = new User();
 
-        _user.status = UserStatus.PENDING_CONFIRMATION;
-        _user.organization = organization;
-        _user.displayName = userRegister.displayName;
-        _user.firstName = userRegister.firstName;
-        _user.lastName = userRegister.lastName;
-        _user.email = userRegister.email;
-        _user.password = userRegister.password;
-        _user.confirmToken = Random.getRandomCryptoString(100);
+        user.status = UserStatus.PENDING_CONFIRMATION;
+        user.organization = newOrganization;
+        user.displayName = userRegister.displayName;
+        user.firstName = userRegister.firstName;
+        user.lastName = userRegister.lastName;
+        user.email = userRegister.email;
+        user.password = userRegister.password;
+        user.confirmToken = Random.getRandomCryptoString(100);
 
         //
-        // Save the _user object to the database.
+        // Save the user object to the database.
         //
-        const user = await this.create(_user);
+        const newUser = await this.create(user);
 
         //
         // Send the welcome email with the confirm token.
         //
-        Sendgrid.send(user.email, 'support@ideation.works', 'd-b380c9ca4c2e4cc9973e82bbc91af953', {
+        Sendgrid.send(newUser.email, 'support@ideation.works', 'd-b380c9ca4c2e4cc9973e82bbc91af953', {
 
             subject: 'Confirm your ideation account!',
-            token: user.confirmToken
+            token: newUser.confirmToken
 
         });
 
-        return user;
+        return newUser;
 
     }
 

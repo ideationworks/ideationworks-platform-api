@@ -12,6 +12,7 @@ const JWT_EXPIRY = Number(process.env.JWT_EXPIRY) || 86400;
  */
 @Injectable()
 export class AuthenticationService {
+
     /**
      * 
      * @param data data to be included in the jwt body
@@ -21,9 +22,12 @@ export class AuthenticationService {
         const token = jwt.sign(data, JWT_TOKEN, { expiresIn: JWT_EXPIRY });
 
         return {
+
             expiresIn: JWT_EXPIRY,
             token
+        
         }
+        
     }
 
     // TODO: Implement Token validation

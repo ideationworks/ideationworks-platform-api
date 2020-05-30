@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
 export class UserResponse {
+
     @ApiProperty()
     @Expose()
     id: String;
@@ -17,4 +18,5 @@ export class UserResponse {
     @ApiProperty()
     @Expose()
     lastName: String;
+    
 }

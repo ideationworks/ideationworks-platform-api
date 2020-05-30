@@ -3,6 +3,7 @@ import { UserResponse } from './UserResponse';
 import { Expose, plainToClass, Type } from "class-transformer";
 
 export class UserRegisterResponse {
+
     @ApiProperty()
     @Expose()
     expiresIn: Number;
@@ -17,6 +18,9 @@ export class UserRegisterResponse {
     user: UserResponse;
 
     public static create(data: any): UserRegisterResponse {
+    
         return plainToClass(UserRegisterResponse, data, { excludeExtraneousValues: true });
+    
     }
+
 }
