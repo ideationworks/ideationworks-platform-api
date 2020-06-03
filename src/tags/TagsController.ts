@@ -1,12 +1,10 @@
 import {
     Body,
-    ClassSerializerInterceptor,
     Controller,
     Get,
     Post,
     Query,
     UseGuards,
-    UseInterceptors,
     Param,
     Delete,
     Put,
@@ -22,6 +20,7 @@ import { Tag } from './Tag';
 import { TagPaginationResponse } from './TagPaginationResponse';
 import { FilterQuery } from '../_lib/common/queryFilter/FilterQuery';
 import { UpdateTag } from './UpdateTag';
+import { PrincipalGuard } from '../_lib/PrincipalGuard';
 
 @ApiTags('tags')
 @ApiBearerAuth()
@@ -35,7 +34,8 @@ export class TagsController {
 
     @Post('/')
     @HttpCode(201)
-    //@UseGuards(PrincipalGuard)
+    @UseGuards(PrincipalGuard)
+    @ApiResponse({ status: 200, type: TagResponse })
     public async create(@Body() tag: CreateTag): Promise<TagResponse> {
 
         const newTag = await this.tagsService.create(plainToClass(Tag, tag));
@@ -45,6 +45,8 @@ export class TagsController {
     }
 
     @Get('/')
+    @HttpCode(200)
+    @UseGuards(PrincipalGuard)
     @ApiResponse({ status: 200, type: TagPaginationResponse })
     public async find(@Query() params: FilterQuery<Tag>): Promise<TagPaginationResponse> {
 
@@ -62,7 +64,9 @@ export class TagsController {
     }
 
     @Get(':id')
-    @ApiResponse({ status: 200, type: TagPaginationResponse })
+    @HttpCode(200)
+    @UseGuards(PrincipalGuard)
+    @ApiResponse({ status: 200, type: TagResponse })
     public async findById(@Param('id') id: string): Promise<TagResponse> {
 
         const tag = await this.tagsService.findById(id);
@@ -73,19 +77,20 @@ export class TagsController {
 
     @Put(':id')
     @HttpCode(200)
+    @UseGuards(PrincipalGuard)
+    @ApiResponse({ status: 200, type: TagResponse })
     public async update(@Param('id') id: string, @Body() tag: UpdateTag): Promise<TagResponse> {
 
         const updatedTag = await this.tagsService.UpdateById(id, tag);
 
-        const response = new TagResponse(updatedTag);
-        console.log(response);
         return new TagResponse(updatedTag);
 
     }
 
     @Delete(':id')
-    @ApiResponse({ status: 204 })
     @HttpCode(204)
+    @UseGuards(PrincipalGuard)
+    @ApiResponse({ status: 204 })
     public async deleteById(@Param('id') id: string): Promise<void> {
 
         return this.tagsService.deleteById(id);

@@ -1,8 +1,5 @@
-import { Injectable, UnauthorizedException, Delete, Param, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ResourceAlreadyExistsException } from '../_lib/exceptions/ResourceAlreadyExistsException';
-import { ResourceNotFoundException } from '../_lib/exceptions/ResourceNotFoundException';
-
 import { TagRepository } from './TagRepository';
 import { Tag } from './Tag';
 import { FindManyOptions, DeleteResult, UpdateResult } from 'typeorm';
