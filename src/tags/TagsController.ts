@@ -61,6 +61,16 @@ export class TagsController {
 
     }
 
+    @Get(':id')
+    @ApiResponse({ status: 200, type: TagPaginationResponse })
+    public async findById(@Param('id') id: string): Promise<TagResponse> {
+
+        const tag = await this.tagsService.findById(id);
+
+        return new TagResponse(tag);
+
+    }
+
     @Put(':id')
     @HttpCode(200)
     public async update(@Param('id') id: string, @Body() tag: UpdateTag): Promise<TagResponse> {

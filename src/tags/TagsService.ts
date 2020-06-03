@@ -26,6 +26,11 @@ export class TagsService {
 
     }
 
+    /**
+     * 
+     * @param id tag identifier
+     * @param tag partial tag object
+     */
     public async UpdateById(id: string, tag: Partial<Tag>): Promise<Tag> {
 
         await this.tagRepository.update(id, tag);
@@ -56,7 +61,7 @@ export class TagsService {
      * 
      */
     public findAndCount(options: FindManyOptions<Tag>): Promise<[Array<Tag>, number]> {
-        
+
         return this.tagRepository.findAndCount(options)
 
     }
@@ -83,4 +88,5 @@ export class TagsService {
         await this.tagRepository.save(tag);
 
     }
+
 }
