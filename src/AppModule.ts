@@ -21,6 +21,10 @@ import { User }                    from './users/User';
 import { UserRepository }          from './users/UserRepository';
 import { UsersController }         from './users/UsersController';
 import { UsersService }            from './users/UsersService';
+import { TagsController}           from './tags/TagsController';
+import { TagsService }             from './tags/TagsService';
+import { Tag }                     from './tags/Tag';
+import { TagRepository }           from './tags/TagRepository';
 
 @Module({
 
@@ -45,6 +49,7 @@ import { UsersService }            from './users/UsersService';
                 IdeaVote,
                 User,
                 Organization,
+                Tag,
 
             ]
 
@@ -56,8 +61,9 @@ import { UsersService }            from './users/UsersService';
             IdeaRepository,
             IdeaVoteRespository,
             UserRepository,
-            OrganizationRepository
-
+            OrganizationRepository,
+            TagRepository,
+            
         ])
 
     ],
@@ -68,7 +74,8 @@ import { UsersService }            from './users/UsersService';
         IdeasController,
         IdeaVotesController,
         OrganizationsController,
-        UsersController
+        UsersController,
+        TagsController,
 
     ],
 
@@ -78,7 +85,8 @@ import { UsersService }            from './users/UsersService';
         IdeasService,
         IdeaVotesService,
         OrganizationsService,
-        UsersService
+        UsersService,
+        TagsService,
 
     ],
 
