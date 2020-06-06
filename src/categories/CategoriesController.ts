@@ -3,7 +3,7 @@ import { ApiTags }                                           from '@nestjs/swagg
 import { CategoriesService }                                 from './CategoriesService';
 import { Category }                                          from './Category';
 import { DeleteResult } from 'typeorm';
-// import { UpdateCategoryDto } from 'dist/categories/dto/UpdateCategoryDto';
+import { UpdateCategory } from './UpdateCategory';
 
 @ApiTags('categories')
 @Controller('/categories')
@@ -35,7 +35,7 @@ export class CategoriesController {
     }
 
     @Put()
-    public update(@Body() category: Category) :Promise<Category> {
+    public update(@Body() category: UpdateCategory) :Promise<UpdateCategory> {
 
         return this.categoriesService.updateCategory(category);
 
@@ -45,7 +45,7 @@ export class CategoriesController {
     public delete(@Param('id', ParseUUIDPipe) id: string): Promise<DeleteResult>{
 
         return this.categoriesService.deleteCategory(id);
-        
+
     }
 
 }

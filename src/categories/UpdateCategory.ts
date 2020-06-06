@@ -5,7 +5,7 @@ import { Base }                            from '../_lib/Base';
 import { Category } from './Category';
 
 @Index([ 'name' ], { unique: true })
-export class UpdateCategoryDto {
+export class UpdateCategory extends Base  {
 
     @ApiProperty()
     @IsNotEmpty()

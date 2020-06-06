@@ -6,7 +6,7 @@ import { Category }                       from './Category';
 import { CategoryRepository }             from './CategoryRepository';
 import { resolve } from 'dns';
 import { DeleteResult } from 'typeorm';
-// import { UpdateCategoryDto } from 'dist/categories/dto/UpdateCategoryDto';
+import { UpdateCategory } from './UpdateCategory';
 
 @Injectable()
 export class CategoriesService {
@@ -79,7 +79,7 @@ export class CategoriesService {
 
     }
 
-    public async updateCategory(category: Category): Promise<Category> {
+    public async updateCategory(category: UpdateCategory): Promise<UpdateCategory> {
 
         return new Promise(async (resolve, reject) => {
 
@@ -93,8 +93,7 @@ export class CategoriesService {
 
                     const updatedResult = await this.categoryRepository.update({ id: category.id }, category);
 
-                    if(updatedResult.raw.affectedRows > 0)
-                    {
+                    if(updatedResult.raw.affectedRows > 0) {
                         resolve(category);
                     }
 
@@ -116,14 +115,12 @@ export class CategoriesService {
 
             const affectedRows = await this.categoryRepository.delete({id});
 
-            if(affectedRows.affected === 0) 
-            {
+            if(affectedRows.affected === 0) {
 
                 reject(new ResourceNotFoundException('category doesnot exist'));
 
             }
-            else
-            {
+            else {
 
                 resolve(affectedRows);
 
