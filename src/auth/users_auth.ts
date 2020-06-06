@@ -1,5 +1,5 @@
 import { ApiProperty }                     from '@nestjs/swagger';
-import { Column, Entity, Index, OneToOne } from 'typeorm';
+import { Column, Entity, Index, OneToOne, PrimaryColumn } from 'typeorm';
 import { IsNotEmpty }          from "class-validator";
 import { Base }                            from '../_lib/Base';
 
@@ -11,9 +11,8 @@ export class Users_auth {
     @Column({ nullable: false })
     public email: string;
 
-    @ApiProperty()
     @IsNotEmpty()
-    @Column({ nullable: false })
+    @PrimaryColumn()
     public id: string;
 
 }

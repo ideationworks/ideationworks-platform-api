@@ -29,6 +29,7 @@ import { TagRepository }           from './tags/TagRepository';
 import { GoogleController } from './auth/GoogleController';
 import {GoogleService } from './auth/GoogleService';
 import { GoogleStrategy } from './auth/google.strategy';
+import {Users_auth} from './auth/users_auth';
 
 @Module({
 
@@ -54,6 +55,7 @@ import { GoogleStrategy } from './auth/google.strategy';
                 User,
                 Organization,
                 Tag,
+                Users_auth
 
             ]
 

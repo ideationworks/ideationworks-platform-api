@@ -1,7 +1,7 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { GoogleService } from './GoogleService';
 import { AuthGuard } from '@nestjs/passport';
-
+ 
 @Controller('auth')
 export class GoogleController {
   constructor(private readonly appService: GoogleService) {}
