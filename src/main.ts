@@ -29,6 +29,7 @@ async function bootstrap() {
                                          .addTag('categories')
                                          .addTag('ideas')
                                          .addTag('users')
+                                         .addTag('users_auth')
                                          .addTag('organizations')
                                          .addBearerAuth()
                                          .build();
