@@ -4,6 +4,9 @@ import { ResourceAlreadyExistsException } from '../_lib/exceptions/ResourceAlrea
 import { ResourceNotFoundException }      from '../_lib/exceptions/ResourceNotFoundException';
 import { Category }                       from './Category';
 import { CategoryRepository }             from './CategoryRepository';
+import { resolve } from 'dns';
+import { DeleteResult } from 'typeorm';
+// import { UpdateCategoryDto } from 'dist/categories/dto/UpdateCategoryDto';
 
 @Injectable()
 export class CategoriesService {
@@ -76,4 +79,57 @@ export class CategoriesService {
 
     }
 
+    public async updateCategory(category: Category): Promise<Category> {
+
+        return new Promise(async (resolve, reject) => {
+
+            this.getById(category.id).catch(() => {
+
+                reject(new ResourceNotFoundException('category does not exist'));
+
+            }).then(() => {
+
+                this.getByName(category.name).catch(async () => {
+
+                    const updatedResult = await this.categoryRepository.update({ id: category.id }, category);
+
+                    if(updatedResult.raw.affectedRows > 0)
+                    {
+                        resolve(category);
+                    }
+
+                }).then(() => {
+
+                    reject(new ResourceAlreadyExistsException('Category name already exists'));
+                    
+                })
+
+            });
+
+        });
+
+    } 
+
+    public async deleteCategory(id: string) :Promise<DeleteResult> {
+
+        return new Promise(async (resolve, reject) => {
+
+            const affectedRows = await this.categoryRepository.delete({id});
+
+            if(affectedRows.affected === 0) 
+            {
+
+                reject(new ResourceNotFoundException('category doesnot exist'));
+
+            }
+            else
+            {
+
+                resolve(affectedRows);
+
+            }
+        });
+    }
+
 }
+
