@@ -18,7 +18,7 @@ import { UserPassword } from './UserPassword';
 export class UsersService {
 
     public constructor(@InjectRepository(UserRepository) private userRepository: UserRepository,
-                       private organizationsService: OrganizationsService) {
+        private organizationsService: OrganizationsService) {
 
     }
 
@@ -130,47 +130,54 @@ export class UsersService {
      * @returns {Promise<string>}
      */
     public async register(userRegister: UserRegister): Promise<User> {
+        
+        //
+        // Verify that the email is not already in use
+        //
+        const userFound = await this.getByEmail(userRegister.email);
+
+        if (userFound) throw new ResourceAlreadyExistsException(`The email ${userRegister.email} is already in use`);
 
         //
         // First create organization so we can later assignToUser it to the
         // user record that we'll created.
         //
-        const _organization: Organization = new Organization();
+        const organization: Organization = new Organization();
 
-        _organization.name = `${ userRegister.email }'s team`;
+        organization.name = `${userRegister.email}'s team`;
 
-        let organization: Organization = await this.organizationsService.create(_organization);
+        const newOrganization: Organization = await this.organizationsService.create(organization);
 
         //
         // Create user assigning the organization to it.
         //
-        const _user: User = new User();
+        const user: User = new User();
 
-        _user.status = UserStatus.PENDING_CONFIRMATION;
-        _user.organization = organization;
-        _user.email = userRegister.email;
-        _user.password = userRegister.password;
-        _user.confirmToken = Random.getRandomCryptoString(100);
+        user.status = UserStatus.PENDING_CONFIRMATION;
+        user.organization = newOrganization;
+        user.displayName = userRegister.displayName;
+        user.firstName = userRegister.firstName;
+        user.lastName = userRegister.lastName;
+        user.email = userRegister.email;
+        user.password = userRegister.password;
+        user.confirmToken = Random.getRandomCryptoString(100);
 
         //
-        // Save the _user object to the database.
+        // Save the user object to the database.
         //
-        const user = await this.create(_user);
-
-        console.log('User registered!');
-        console.log(user);
+        const newUser = await this.create(user);
 
         //
         // Send the welcome email with the confirm token.
         //
-        Sendgrid.send(user.email, 'support@ideation.works', 'd-b380c9ca4c2e4cc9973e82bbc91af953', {
+        Sendgrid.send(newUser.email, 'support@ideation.works', 'd-b380c9ca4c2e4cc9973e82bbc91af953', {
 
             subject: 'Confirm your ideation account!',
-            token: user.confirmToken
+            token: newUser.confirmToken
 
         });
 
-        return user;
+        return newUser;
 
     }
 
@@ -244,7 +251,7 @@ export class UsersService {
     public async changePassword(user: User, newPassword: UserPassword): Promise<User> {
 
         const userRecord = await this.getByEmail(user.email);
-        
+
         userRecord.password = newPassword.password;
 
         return this.userRepository.save(userRecord);

@@ -21,6 +21,7 @@ import { User }                    from './users/User';
 import { UserRepository }          from './users/UserRepository';
 import { UsersController }         from './users/UsersController';
 import { UsersService }            from './users/UsersService';
+import { AuthenticationService }   from './_lib/authentication/AuthenticationService';
 import { TagsController}           from './tags/TagsController';
 import { TagsService }             from './tags/TagsService';
 import { Tag }                     from './tags/Tag';
@@ -86,6 +87,7 @@ import { TagRepository }           from './tags/TagRepository';
         IdeaVotesService,
         OrganizationsService,
         UsersService,
+        AuthenticationService,
         TagsService,
 
     ],
