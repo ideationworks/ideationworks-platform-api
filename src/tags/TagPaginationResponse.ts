@@ -3,7 +3,6 @@ import { TagResponse } from "./TagResponse";
 import { Tag } from "./Tag";
 import { PaginationQuery } from "src/_lib/common/pagination/PaginationQuery";
 import { ApiProperty } from "@nestjs/swagger";
-import { Type, Expose } from "class-transformer";
 
 export class TagPaginationResponse extends PaginationResponse<Tag, TagResponse> {
 
@@ -14,7 +13,7 @@ export class TagPaginationResponse extends PaginationResponse<Tag, TagResponse> 
     @ApiProperty({ type: [TagResponse] })
     records: TagResponse[]
 
-    constructor(items: [Tag[], number], page: PaginationQuery) {
+    constructor(items: [Tag[], number], page: PaginationQuery<Tag>) {
 
         super(TagResponse, items, page)
 
