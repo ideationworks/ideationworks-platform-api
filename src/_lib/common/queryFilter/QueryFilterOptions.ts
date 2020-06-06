@@ -5,8 +5,10 @@
  * */
 interface QueryFilterOptions<T> {
 
-    fields?: (keyof T)[],
-    queryFields?: (keyof T)[],
-    softDelete?: boolean,
+    fields?: (keyof T)[];
+    queryFields?: (keyof T)[];
+    softDelete?: boolean;
+    relations?: string[];
+    sortBy?:(keyof T)[];
 
 }
