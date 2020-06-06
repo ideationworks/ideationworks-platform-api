@@ -1,9 +1,9 @@
 import { CanActivate, ExecutionContext, Inject, Injectable } from '@nestjs/common';
-import { Reflector }                                         from '@nestjs/core';
-import { Request, Response }                                 from 'express';
+import { Reflector } from '@nestjs/core';
+import { Request, Response } from 'express';
 
-import * as jwt         from 'jsonwebtoken';
 import { UsersService } from '../users/UsersService';
+import { AuthenticationService } from './authentication/AuthenticationService';
 
 /**
  * Principal Guard for protecting routes and automatically retrieving the users profile.
@@ -12,7 +12,8 @@ import { UsersService } from '../users/UsersService';
 export class PrincipalGuard implements CanActivate {
 
     public constructor(@Inject('UsersService') private readonly usersService: UsersService,
-                       private readonly reflector: Reflector) {
+        @Inject('AuthenticationService') private readonly authenticationService: AuthenticationService,
+        private readonly reflector: Reflector) {
 
     }
 
@@ -37,8 +38,8 @@ export class PrincipalGuard implements CanActivate {
 
                 try {
 
-                    const decoded = jwt.verify(split[ 1 ], process.env.JWT_SECRET || 'change');
-                    const user = await this.usersService.getUserById(decoded[ 'id' ]);
+                    const jwtData = this.authenticationService.getJWTData(split[ 1 ]);
+                    const user = await this.usersService.getUserById(jwtData.id);
 
                     if (user) {
 
