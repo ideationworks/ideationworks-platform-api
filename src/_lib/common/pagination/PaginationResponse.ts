@@ -36,7 +36,7 @@ export abstract class PaginationResponse<T, U> {
      * @param page Pagination parameters
      * 
      */
-    constructor(recordType: Function, items: [Array<T>, number], page: PaginationQuery) {
+    constructor(recordType: Function, items: [Array<T>, number], page: PaginationQuery<T>) {
 
         this.recordType = recordType;
 
