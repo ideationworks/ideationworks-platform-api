@@ -41,7 +41,7 @@ export class IdeasController {
         const query = params.getFindManyOptions({
 
             queryFields: ['title', 'status', 'tags'],
-            relations: ['tags', 'owner'],
+            relations: ['tags', 'owner', 'category'],
             sortBy: ['title'],
             softDelete: true,
 
@@ -62,7 +62,7 @@ export class IdeasController {
 
         const query = params.getFindOneOptions({
 
-            relations: ['owner', 'tags'],
+            relations: ['owner', 'tags', 'category'],
             softDelete: true
 
         });

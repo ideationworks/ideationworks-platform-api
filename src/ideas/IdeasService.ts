@@ -22,6 +22,10 @@ export class IdeasService implements CrudServiceBase<Idea>{
 
     }
 
+    /**
+     * Delete Idea using Identifier
+     * @param id Idea Id
+     */
     public async deleteById(id: string): Promise<void> {
 
 
@@ -36,7 +40,11 @@ export class IdeasService implements CrudServiceBase<Idea>{
 
     }
 
-
+    /**
+     * Get Idea using Identifier
+     * @param id Idea id
+     * @param options FindOneOptions
+     */
     public async getById(id: string, options?: FindOneOptions<Idea>): Promise<Idea> {
 
         const idea = await this.ideaRepository.findOne(id, options);
@@ -47,7 +55,10 @@ export class IdeasService implements CrudServiceBase<Idea>{
 
     }
 
-
+    /**
+     * Create Idea 
+     * @param idea partial idea entity
+     */
     public async create(idea: Partial<Idea>): Promise<Idea> {
 
         const category = await this.categoriesService.getById(idea.categoryId);
@@ -60,12 +71,21 @@ export class IdeasService implements CrudServiceBase<Idea>{
 
     }
 
+    /**
+     * Return total items found and records requested
+     * @param query Find many options
+     */
     public findAndCount(query: FindManyOptions<Idea>): Promise<[Idea[], number]> {
 
         return this.ideaRepository.findAndCount(query);
 
     }
 
+    /**
+     * Update an Idea by Id
+     * @param id idea identifier
+     * @param idea partial idea entity
+     */
     public async updateById(id: string, idea: Partial<Idea>): Promise<Idea> {
 
         await this.ideaRepository.update(id, idea);
@@ -73,7 +93,11 @@ export class IdeasService implements CrudServiceBase<Idea>{
         return this.getById(id);
     }
 
-
+    /**
+     * Update Tag
+     * @param ideaId idea identifier
+     * @param tagId tag identifier
+     */ 
     public async linkTag(ideaId: string, tagId: string): Promise<void> {
 
         const idea = await this.getById(ideaId);
@@ -88,6 +112,11 @@ export class IdeasService implements CrudServiceBase<Idea>{
 
     }
 
+    /**
+     * Remove relation between idea and tag
+     * @param ideaId idea identifier
+     * @param tagId tag identifier
+     */
     public async unlinkTag(ideaId: string, tagId: string): Promise<void> {
 
         const idea = await this.getById(ideaId);

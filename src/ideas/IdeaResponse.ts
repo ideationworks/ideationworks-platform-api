@@ -3,6 +3,8 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 import { IdeaStatus } from "./IdeaStatus";
 import { TagResponse } from "../tags/TagResponse";
+import { CategoryResponse } from "../categories/CategoryResponse";
+import { UserResponse } from "../users/Response/UserResponse";
 
 export class IdeaResponse extends BaseResponse {
 
@@ -22,13 +24,19 @@ export class IdeaResponse extends BaseResponse {
     @Expose()
     ownerId: string;
 
-    //TODO: Add UserResponse 
+    @ApiProperty()
+    @Expose()
+    @Type(() => UserResponse)
+    owner: UserResponse
 
     @ApiProperty()
     @Expose()
     categoryId: string;
 
-    //TODO: Add Category depends on Category Management
+    @ApiProperty()
+    @Expose()
+    @Type(() => CategoryResponse)
+    category: CategoryResponse;
 
     @ApiProperty()
     @Expose()
