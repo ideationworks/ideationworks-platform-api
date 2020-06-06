@@ -25,10 +25,20 @@ export class AuthenticationService {
 
             expiresIn: JWT_EXPIRY,
             token
-        
+
         }
-        
+
     }
 
-    // TODO: Implement Token validation
+    /**
+     * Returns body data or throw an error if token is invalid
+     * @param token json web token
+     */
+    getJWTData(token: string): JWTData {
+
+        const decoded = jwt.verify(token, JWT_TOKEN);
+        return decoded as JWTData;
+
+    }
+
 }

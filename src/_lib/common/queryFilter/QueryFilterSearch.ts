@@ -6,6 +6,6 @@ export interface QueryWhereOptions {
 
 export type QueryFilterSearch<T> = {
 
-    [Key in keyof T]?: string | QueryWhereOptions
+    [Key in keyof T]?: string | number | QueryWhereOptions
 
 }

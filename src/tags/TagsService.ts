@@ -4,9 +4,10 @@ import { TagRepository } from './TagRepository';
 import { Tag } from './Tag';
 import { FindManyOptions, DeleteResult, UpdateResult } from 'typeorm';
 import { TagStatus } from './TagStatus';
+import { CrudServiceBase } from 'src/_lib/common/crud/CrudServiceBase';
 
 @Injectable()
-export class TagsService {
+export class TagsService implements CrudServiceBase<Tag>{
 
     public constructor(@InjectRepository(TagRepository) private tagRepository: TagRepository) { }
 
@@ -28,11 +29,11 @@ export class TagsService {
      * @param id tag identifier
      * @param tag partial tag object
      */
-    public async UpdateById(id: string, tag: Partial<Tag>): Promise<Tag> {
+    public async updateById(id: string, tag: Partial<Tag>): Promise<Tag> {
 
         await this.tagRepository.update(id, tag);
 
-        return this.findById(id);
+        return this.getById(id);
 
     }
 
@@ -41,7 +42,7 @@ export class TagsService {
      * @param id Tag identifier
      * 
      */
-    public async findById(id: string): Promise<Tag> {
+    public async getById(id: string): Promise<Tag> {
 
         const tag = await this.tagRepository.findOne(id);
 

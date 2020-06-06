@@ -1,45 +1,58 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsJSON, IsString, IsObject, IsOptional, IsIn } from "class-validator";
+import { IsString, IsObject, IsOptional } from "class-validator";
 import { Transform } from "class-transformer";
 import { PaginationQuery } from "../pagination/PaginationQuery";
-import { FindManyOptions, Like, FindConditions } from "typeorm";
+import { FindManyOptions, Like, FindConditions, FindOneOptions } from "typeorm";
 import { SortFilter, getSortFilterFromString } from "./SortFilter";
-import { User } from "src/users/User";
 import { QueryFilterSearch } from "./QueryFilterSearch";
 
-export class FilterQuery<T> extends PaginationQuery {
+export class FilterQuery<T> {
 
     @ApiProperty()
     @IsObject({ message: "Is not a valid JSON Object" })
     @IsOptional()
     @Transform(value => transformJson(value))
-    q: QueryFilterSearch<T>;
+    q?: QueryFilterSearch<T>;
 
     @ApiProperty()
     @IsString({ each: true })
     @IsOptional()
     @Transform((value: string) => value && value.split(','))
-    fields: (keyof T)[];
+    fields?: (keyof T)[];
 
     @ApiProperty()
     @IsOptional()
     @Transform((value) => value && getSortFilterFromString(value))
-    sort: SortFilter<T>;
+    sort?: SortFilter<T>;
 
-    getFindManyOptions(options?: QueryFilterOptions<T>): FindManyOptions<T> {
+    @ApiProperty()
+    @IsOptional()
+    @Transform((value: string) => value && value.split(','))
+    relations?: string[]
 
-        const query: FindManyOptions<T> = {
 
-            skip: this.offset,
-            take: this.size,
+    /**
+     * 
+     * Use to get findOneOptions use in typeorm queries
+     * @param options parameters use to determinate permisions for the query
+     */
+    public getFindOneOptions(options?: QueryFilterOptions<T>): FindOneOptions<T> {
 
-        };
+        const query: FindOneOptions<T> = {};
 
-        const { fields, sort, q } = this;
+        const { fields, sort, q, relations } = this;
 
-        if (sort) query.order = sort;
+        // If no options are pass it retunrs
+        if (!options) return query;
 
-        console.log(this);
+
+        if (options.sortBy && sort) {
+
+            const sortFound = Object.keys(sort).find((value) => options.sortBy.indexOf(value as keyof T) > -1);
+
+            if (sortFound) query.order = { [sortFound]: sort[sortFound] } as SortFilter<T>;
+
+        }
 
         if (options.fields && fields) {
 
@@ -54,6 +67,26 @@ export class FilterQuery<T> extends PaginationQuery {
             });
 
             if (foundFields.length > 0) query.select = foundFields;
+
+        }
+        /**
+         * 
+         * Logic to add explicity relation in the query
+         */
+
+        if (options.relations && relations) {
+
+            //
+            // Filter fields relations manually since we don't have access to the metadata of thee repository
+            // and we want to avoid code coupling, if no option relation is provided no relation will be added
+            //
+            const foundRelations = relations.filter((value, index) => {
+
+                return options.relations.indexOf(value) !== -1;
+
+            });
+
+            if (foundRelations.length > 0) query.relations = foundRelations;
 
         }
 
@@ -71,7 +104,7 @@ export class FilterQuery<T> extends PaginationQuery {
 
                 if (options.queryFields.indexOf(key as keyof T) > -1) {
 
-                    if (typeof q[key] === 'string') where[key] = q[key];
+                    if (['string', 'number'].indexOf(typeof q[key]) > -1) where[key] = q[key];
 
                     if (q[key].$like) where[key] = Like(q[key].$like);
 

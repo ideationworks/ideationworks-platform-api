@@ -18,9 +18,9 @@ import { CreateTag } from './CreateTag';
 import { plainToClass } from 'class-transformer';
 import { Tag } from './Tag';
 import { TagPaginationResponse } from './TagPaginationResponse';
-import { FilterQuery } from '../_lib/common/queryFilter/FilterQuery';
 import { UpdateTag } from './UpdateTag';
 import { PrincipalGuard } from '../_lib/PrincipalGuard';
+import { PaginationQuery } from '../_lib/common/pagination/PaginationQuery';
 
 @ApiTags('tags')
 @ApiBearerAuth()
@@ -32,7 +32,7 @@ export class TagsController {
 
     }
 
-    @Post('/')
+    @Post()
     @HttpCode(201)
     @UseGuards(PrincipalGuard)
     @ApiResponse({ status: 200, type: TagResponse })
@@ -44,15 +44,16 @@ export class TagsController {
 
     }
 
-    @Get('/')
+    @Get()
     @HttpCode(200)
     @UseGuards(PrincipalGuard)
     @ApiResponse({ status: 200, type: TagPaginationResponse })
-    public async find(@Query() params: FilterQuery<Tag>): Promise<TagPaginationResponse> {
+    public async find(@Query() params: PaginationQuery<Tag>): Promise<TagPaginationResponse> {
 
         const query = params.getFindManyOptions({
 
             queryFields: ['name', 'status'],
+            sortBy: ['name'],
             softDelete: true
 
         });
@@ -69,7 +70,7 @@ export class TagsController {
     @ApiResponse({ status: 200, type: TagResponse })
     public async findById(@Param('id') id: string): Promise<TagResponse> {
 
-        const tag = await this.tagsService.findById(id);
+        const tag = await this.tagsService.getById(id);
 
         return new TagResponse(tag);
 
@@ -81,7 +82,7 @@ export class TagsController {
     @ApiResponse({ status: 200, type: TagResponse })
     public async update(@Param('id') id: string, @Body() tag: UpdateTag): Promise<TagResponse> {
 
-        const updatedTag = await this.tagsService.UpdateById(id, tag);
+        const updatedTag = await this.tagsService.updateById(id, tag);
 
         return new TagResponse(updatedTag);
 

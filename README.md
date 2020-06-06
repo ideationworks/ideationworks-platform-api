@@ -97,10 +97,16 @@ To do a search and find a exact value we have to provide a JSON that might look 
 
 ### Like Parameter value
 
-To do a search that use the like operator we need to provide as value for our parameter key a object `{ "$like": "value_to_search"}.
+To do a search that use the like operator we need to provide as value for our parameter key a object `{ "$like": "value_to_search"}`.
 
 *Important:* you might need to use `%` as you were doing a like in MySQL.
 
-**Example**
+**Example:**
 > http://localhost:3000/endpoint?q={"name_field" : { "$like" : "%field_value"} }
 
+## Relations
+
+To include relations in the response it is necesary to pass the list of relations needed separated by comma using the parameter `relations`
+
+**Example:**
+> http://localhost:3000/endpoint?relations=tags,owner
