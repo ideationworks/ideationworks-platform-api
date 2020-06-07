@@ -5,6 +5,7 @@ import { IdeaStatus } from "./IdeaStatus";
 import { TagResponse } from "../tags/TagResponse";
 import { CategoryResponse } from "../categories/CategoryResponse";
 import { UserResponse } from "../users/Response/UserResponse";
+import { IdeaVoteResponse } from "./votes/IdeaVoteResponse";
 
 export class IdeaResponse extends BaseResponse {
 
@@ -47,5 +48,17 @@ export class IdeaResponse extends BaseResponse {
     @Type(() => TagResponse)
     tags: TagResponse[];
 
+    @ApiProperty()
+    @Expose()
+    votesUp: number;
 
+    @ApiProperty()
+    @Expose()
+    votesDown: number;
+
+    @ApiProperty()
+    @Expose()
+    @Type(() => IdeaVoteResponse)
+    userVote: IdeaVoteResponse
+    
 }
