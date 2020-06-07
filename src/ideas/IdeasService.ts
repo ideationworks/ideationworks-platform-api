@@ -65,8 +65,6 @@ export class IdeasService implements CrudServiceBase<Idea>{
 
         if (!category) throw new NotFoundException(`Category with id ${idea.categoryId} not found`)
 
-        console.log(idea);
-
         return this.ideaRepository.save(idea);
 
     }

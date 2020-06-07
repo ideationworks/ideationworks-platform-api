@@ -86,7 +86,7 @@ export class IdeasController {
         });
 
         let idea: IdeaUserVote = await this.ideasService.getById(id, query);
-
+        
         if (userVote) idea = await this.ideaVotesService.getIdeaUserVote(user.id, idea);
 
         return new IdeaResponse(idea);
