@@ -4,7 +4,7 @@ import { IsNotEmpty }          from "class-validator";
 import { Base }                            from '../_lib/Base';
 
 @Entity('users_auth')
-export class Users_auth {
+export class Users_auth extends Base{
 
     @ApiProperty()
     @IsNotEmpty()
@@ -12,7 +12,7 @@ export class Users_auth {
     public email: string;
 
     @IsNotEmpty()
-    @PrimaryColumn()
-    public id: string;
+    @Column({ nullable: false })
+    public authId: string;
 
 }

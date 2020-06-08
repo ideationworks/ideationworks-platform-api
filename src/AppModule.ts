@@ -30,7 +30,7 @@ import { GoogleController } from './auth/GoogleController';
 import {GoogleService } from './auth/GoogleService';
 import { GoogleStrategy } from './auth/google.strategy';
 import {Users_auth} from './auth/users_auth';
-
+import {Users_authRepository} from './auth/Users_authRepository'
 @Module({
 
     imports: [
@@ -69,6 +69,7 @@ import {Users_auth} from './auth/users_auth';
             UserRepository,
             OrganizationRepository,
             TagRepository,
+            Users_authRepository
             
         ])
 
