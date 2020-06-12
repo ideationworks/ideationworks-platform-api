@@ -26,7 +26,11 @@ import { TagsController}           from './tags/TagsController';
 import { TagsService }             from './tags/TagsService';
 import { Tag }                     from './tags/Tag';
 import { TagRepository }           from './tags/TagRepository';
-
+import { GoogleController } from './auth/GoogleController';
+import {GoogleService } from './auth/GoogleService';
+import { GoogleStrategy } from './auth/google.strategy';
+import {Users_auth} from './auth/users_auth';
+import {Users_authRepository} from './auth/Users_authRepository'
 @Module({
 
     imports: [
@@ -51,6 +55,7 @@ import { TagRepository }           from './tags/TagRepository';
                 User,
                 Organization,
                 Tag,
+                Users_auth
 
             ]
 
@@ -64,6 +69,7 @@ import { TagRepository }           from './tags/TagRepository';
             UserRepository,
             OrganizationRepository,
             TagRepository,
+            Users_authRepository
             
         ])
 
@@ -77,6 +83,7 @@ import { TagRepository }           from './tags/TagRepository';
         OrganizationsController,
         UsersController,
         TagsController,
+        GoogleController
 
     ],
 
@@ -89,6 +96,8 @@ import { TagRepository }           from './tags/TagRepository';
         UsersService,
         AuthenticationService,
         TagsService,
+        GoogleService,
+        GoogleStrategy
 
     ],
 

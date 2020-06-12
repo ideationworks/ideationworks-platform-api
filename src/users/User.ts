@@ -1,10 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
-import { BeforeInsert, BeforeUpdate, Column, Entity, Index, ManyToMany } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, Index, ManyToMany, OneToOne, JoinColumn } from 'typeorm';
 import { Base } from '../_lib/Base';
 import { Organization } from '../organizations/Organization';
 import { UserStatus } from './UserStatus';
+import { Users_auth } from '../auth/users_auth';
+
 
 @Entity('users')
 @Index([ 'email' ], {unique: true})
@@ -26,16 +28,16 @@ export class User extends Base {
     }
 
     @ApiProperty()
-    @Column()
+    @Column({nullable: true})
     @Exclude({toPlainOnly: true})
     public password?: string;
 
     @ApiProperty()
-    @Column()
+    @Column({nullable: true})
     public status?: UserStatus;
 
     @ApiProperty()
-    @Column()
+    @Column({nullable: true})
     public displayName?: string;
 
     @ApiProperty()
@@ -55,5 +57,9 @@ export class User extends Base {
 
     @Column({nullable: true, length: 255})
     public confirmToken: string;
+
+    @OneToOne(type => Users_auth)
+    @JoinColumn()
+    public userAuth: Users_auth
 
 }
