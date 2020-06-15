@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository }               from '@nestjs/typeorm';
-import {Users_authRepository} from './Users_authRepository';
-import { Users_auth } from './users_auth';
+import {UsersAuthRepository} from './UsersAuthRepository';
+import { UsersAuth } from './UsersAuth';
 import {User} from '../users/User';
 import { UserRepository } from '../users/UserRepository';
 
@@ -9,51 +9,44 @@ import { UserRepository } from '../users/UserRepository';
 export class GoogleService {
   public constructor(
 
-    @InjectRepository(Users_authRepository) private users_auth: Users_authRepository,
+    @InjectRepository(UsersAuthRepository) private users_auth: UsersAuthRepository,
     @InjectRepository(UserRepository) private users: UserRepository
 
     ) {}
 
-  async googleLogin(req) {
+  async googleLogin(user) {
 
-    if (!req.user) {
+    if (!user) {
 
       return 'No user from google';
 
     }
     try{
-      const user_auth = await this.users_auth.findOne({ where: { authId:req.user.id } });
+      const user_auth = await this.users_auth.findOne({ where: { authId:user.id } });
 
       if(!user_auth){
           
-        const authUser = new Users_auth();
-        authUser.email= req.user.email;
-        authUser.authId = req.user.id;
-        this.users_auth.save(authUser);
-        console.log("SAVED !!")
+        const authUser = new UsersAuth();
+        authUser.email= user.email;
+        authUser.authId = user.id;
+        await this.users_auth.save(authUser);
 
-        const user = new User();
-        user.firstName = req.user.firstName;
-        user.lastName = req.user.lastName;
-        user.email = req.user.email;
-        user.userAuth = authUser;
-        this.users.save(user);
+        const newUser = new User();
+        newUser.firstName = user.firstName;
+        newUser.lastName = user.lastName;
+        newUser.email = user.email;
+        newUser.userAuth = authUser;
+        await this.users.save(newUser);
 
-        return req.user
+        return user
 
       }else {
-        return "already a user"
+        return "already a user";
       }
 
     } catch(e) {
-
-      console.log(e);
+      throw new Error(e.message)
     }
-    // return {
 
-    //   message: 'User information from google',
-    //   user: req.user
-      
-    // }
   }
 }

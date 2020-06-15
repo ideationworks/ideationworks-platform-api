@@ -1,10 +1,10 @@
-import { ApiProperty }                     from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, Index, OneToOne, PrimaryColumn } from 'typeorm';
-import { IsNotEmpty }          from "class-validator";
-import { Base }                            from '../_lib/Base';
+import { IsNotEmpty } from 'class-validator';
+import { Base } from '../_lib/Base';
 
 @Entity('users_auth')
-export class Users_auth extends Base{
+export class UsersAuth extends Base {
 
     @ApiProperty()
     @IsNotEmpty()
@@ -16,3 +16,4 @@ export class Users_auth extends Base{
     public authId: string;
 
 }
+

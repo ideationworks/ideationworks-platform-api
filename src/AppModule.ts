@@ -1,3 +1,4 @@
+/* tslint:disable:import-spacing */
 import { Module }                  from '@nestjs/common';
 import { JwtModule }               from '@nestjs/jwt';
 import { TypeOrmModule }           from '@nestjs/typeorm';
@@ -23,14 +24,15 @@ import { UsersController }         from './users/UsersController';
 import { UsersService }            from './users/UsersService';
 import { AuthenticationService }   from './_lib/authentication/AuthenticationService';
 import { TagsController}           from './tags/TagsController';
+
 import { TagsService }             from './tags/TagsService';
 import { Tag }                     from './tags/Tag';
 import { TagRepository }           from './tags/TagRepository';
 import { GoogleController } from './auth/GoogleController';
 import {GoogleService } from './auth/GoogleService';
 import { GoogleStrategy } from './auth/google.strategy';
-import {Users_auth} from './auth/users_auth';
-import {Users_authRepository} from './auth/Users_authRepository'
+import {UsersAuthRepository} from './auth/UsersAuthRepository';
+import {UsersAuth} from './auth/UsersAuth';
 @Module({
 
     imports: [
@@ -55,9 +57,9 @@ import {Users_authRepository} from './auth/Users_authRepository'
                 User,
                 Organization,
                 Tag,
-                Users_auth
+                UsersAuth,
 
-            ]
+            ],
 
         }),
 
@@ -69,9 +71,9 @@ import {Users_authRepository} from './auth/Users_authRepository'
             UserRepository,
             OrganizationRepository,
             TagRepository,
-            Users_authRepository
-            
-        ])
+            UsersAuthRepository,
+
+        ]),
 
     ],
 
@@ -83,7 +85,7 @@ import {Users_authRepository} from './auth/Users_authRepository'
         OrganizationsController,
         UsersController,
         TagsController,
-        GoogleController
+        GoogleController,
 
     ],
 
@@ -97,7 +99,7 @@ import {Users_authRepository} from './auth/Users_authRepository'
         AuthenticationService,
         TagsService,
         GoogleService,
-        GoogleStrategy
+        GoogleStrategy,
 
     ],
 

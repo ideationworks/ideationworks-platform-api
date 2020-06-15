@@ -5,7 +5,7 @@ import { BeforeInsert, BeforeUpdate, Column, Entity, Index, ManyToMany, OneToOne
 import { Base } from '../_lib/Base';
 import { Organization } from '../organizations/Organization';
 import { UserStatus } from './UserStatus';
-import { Users_auth } from '../auth/users_auth';
+import { UsersAuth } from '../auth/UsersAuth';
 
 
 @Entity('users')
@@ -58,8 +58,8 @@ export class User extends Base {
     @Column({nullable: true, length: 255})
     public confirmToken: string;
 
-    @OneToOne(type => Users_auth)
+    @OneToOne(type => UsersAuth)
     @JoinColumn()
-    public userAuth: Users_auth
+    public userAuth: UsersAuth
 
 }
