@@ -7,6 +7,7 @@ import { CategoryRepository }             from './CategoryRepository';
 import { resolve } from 'dns';
 import { DeleteResult } from 'typeorm';
 import { UpdateCategory } from './UpdateCategory';
+import { FilterCategoriesDto } from './FilterCategoriesDto';
 
 @Injectable()
 export class CategoriesService {
@@ -126,6 +127,20 @@ export class CategoriesService {
 
             }
         });
+    }
+
+    public async getFilterCategories(filterDto: FilterCategoriesDto) : Promise<Category[]> {
+        const {name} = filterDto;
+        const query = this.categoryRepository.createQueryBuilder('category');
+        let categories = [];
+        if (name) {
+            await query.andWhere('(category.name LIKE :name)', { name: `%${name}%` })
+            categories = await query.getMany();
+        }else{
+            categories = await query.getMany();
+        }
+        return categories;
+
     }
 
 }
