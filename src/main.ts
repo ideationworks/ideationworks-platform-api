@@ -13,8 +13,8 @@ async function bootstrap() {
 
             origin: [
 
-                'http://localhost:8082', // local user interface
-                'https://*.odin.com'
+                'http://localhost:4200', // local user interface
+                'https://*.odin.com',
 
             ]
 
