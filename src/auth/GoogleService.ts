@@ -4,6 +4,8 @@ import {UsersAuthRepository} from './UsersAuthRepository';
 import { UsersAuth } from './UsersAuth';
 import {User} from '../users/User';
 import { UserRepository } from '../users/UserRepository';
+import {ResourceNotFoundException} from "../_lib/exceptions/ResourceNotFoundException";
+import {ResourceAlreadyExistsException} from "../_lib/exceptions/ResourceAlreadyExistsException";
 
 @Injectable()
 export class GoogleService {
@@ -18,13 +20,12 @@ export class GoogleService {
 
     if (!user) {
 
-      return 'No user from google';
+      return new ResourceNotFoundException("User does not exist");
 
     }
-    try{
       const user_auth = await this.usersAuth.findOne({ where: { authId:user.id } });
 
-      if(!user_auth){
+      if(!user_auth) {
           
         const authUser = new UsersAuth();
         authUser.email= user.email;
@@ -40,12 +41,8 @@ export class GoogleService {
 
         return user
 
+      }else {
+        return new ResourceAlreadyExistsException("User already exists");
       }
-    } catch(e) {
-
-      throw new Error(e.message)
-
-    }
-
   }
 }
