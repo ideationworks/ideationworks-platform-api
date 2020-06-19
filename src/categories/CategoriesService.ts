@@ -134,9 +134,12 @@ export class CategoriesService {
         const query = this.categoryRepository.createQueryBuilder('category');
         let categories = [];
         if (name) {
+
             await query.andWhere('(category.name LIKE :name)', { name: `%${name}%` })
             categories = await query.getMany();
-        }else{
+
+        } else {
+
             categories = await query.getMany();
         }
         return categories;

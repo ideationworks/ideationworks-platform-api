@@ -9,12 +9,12 @@ import { UserRepository } from '../users/UserRepository';
 export class GoogleService {
   public constructor(
 
-    @InjectRepository(UsersAuthRepository) private users_auth: UsersAuthRepository,
+    @InjectRepository(UsersAuthRepository) private usersAuth: UsersAuthRepository,
     @InjectRepository(UserRepository) private users: UserRepository
 
     ) {}
 
-  async googleLogin(user) {
+  async googleLogin(user: any) {
 
     if (!user) {
 
@@ -22,14 +22,14 @@ export class GoogleService {
 
     }
     try{
-      const user_auth = await this.users_auth.findOne({ where: { authId:user.id } });
+      const user_auth = await this.usersAuth.findOne({ where: { authId:user.id } });
 
       if(!user_auth){
           
         const authUser = new UsersAuth();
         authUser.email= user.email;
         authUser.authId = user.id;
-        await this.users_auth.save(authUser);
+        await this.usersAuth.save(authUser);
 
         const newUser = new User();
         newUser.firstName = user.firstName;
@@ -40,12 +40,11 @@ export class GoogleService {
 
         return user
 
-      }else {
-        return "already a user";
       }
-
     } catch(e) {
+
       throw new Error(e.message)
+
     }
 
   }

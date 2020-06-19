@@ -14,16 +14,16 @@ export class CategoriesController {
 
     }
 
+    // @Get()
+    // public getAll(): Promise<Array<Category>> {
+    //
+    //     return this.categoriesService.getAll();
+    //
+    // }
+
+
     @Get()
-    public getAll(): Promise<Array<Category>> {
-
-        return this.categoriesService.getAll();
-
-    }
-
-
-    @Get('/filter')
-    getTasks(@Query(ValidationPipe) filterDto: FilterCategoriesDto) : Promise<Category[]>{
+    getCategories(@Query(ValidationPipe) filterDto: FilterCategoriesDto) : Promise<Category[]>{
         return this.categoriesService.getFilterCategories(filterDto);
     }
 

@@ -6,7 +6,6 @@ import { Base } from '../_lib/Base';
 @Entity('users_auth')
 export class UsersAuth extends Base {
 
-    @ApiProperty()
     @IsNotEmpty()
     @Column({ nullable: false })
     public email: string;
