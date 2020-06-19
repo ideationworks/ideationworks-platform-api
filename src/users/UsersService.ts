@@ -13,6 +13,7 @@ import { UserRegister } from './UserRegister';
 import { UserRepository } from './UserRepository';
 import { UserStatus } from './UserStatus';
 import { UserPassword } from './UserPassword';
+import { FieldErrors } from '../_lib/common/errors/FieldErrors';
 
 @Injectable()
 export class UsersService {
@@ -35,7 +36,9 @@ export class UsersService {
 
         if (await this.getByEmail(user.email)) {
 
-            throw new ResourceAlreadyExistsException('user by this email already exists');
+            const error = new FieldErrors('email', user.email, 'exists', 'user by this email already exists');
+
+            throw new ResourceAlreadyExistsException(error.errors);
 
         } else {
 
@@ -130,13 +133,18 @@ export class UsersService {
      * @returns {Promise<string>}
      */
     public async register(userRegister: UserRegister): Promise<User> {
-        
+
         //
         // Verify that the email is not already in use
         //
         const userFound = await this.getByEmail(userRegister.email);
 
-        if (userFound) throw new ResourceAlreadyExistsException(`The email ${userRegister.email} is already in use`);
+        if (userFound) {
+
+            const error = new FieldErrors('email', userRegister.email, 'exists', `The email ${userRegister.email} is already in use`);
+            throw new ResourceAlreadyExistsException(error.errors);
+
+        }
 
         //
         // First create organization so we can later assignToUser it to the
@@ -173,7 +181,7 @@ export class UsersService {
         Sendgrid.send(newUser.email, 'support@ideation.works', 'd-b380c9ca4c2e4cc9973e82bbc91af953', {
 
             subject: 'Confirm your ideation account!',
-            token: newUser.confirmToken
+            token: newUser.confirmToken,
 
         });
 
@@ -225,7 +233,7 @@ export class UsersService {
      */
     public async resetSubmit(token: string, password: string): Promise<boolean> {
 
-        const user = await this.userRepository.findOne({where: {forgotToken: token}});
+        const user = await this.userRepository.findOne({ where: { forgotToken: token } });
 
         if (user) {
 
