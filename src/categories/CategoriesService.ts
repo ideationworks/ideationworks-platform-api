@@ -5,9 +5,10 @@ import { ResourceNotFoundException }      from '../_lib/exceptions/ResourceNotFo
 import { Category }                       from './Category';
 import { CategoryRepository }             from './CategoryRepository';
 import { resolve } from 'dns';
-import { DeleteResult } from 'typeorm';
+import {DeleteResult, FindManyOptions} from 'typeorm';
 import { UpdateCategory } from './UpdateCategory';
 import { FilterCategoriesDto } from './FilterCategoriesDto';
+import {Idea} from "../ideas/Idea";
 
 @Injectable()
 export class CategoriesService {
@@ -129,20 +130,9 @@ export class CategoriesService {
         });
     }
 
-    public async getFilterCategories(filterDto: FilterCategoriesDto) : Promise<Category[]> {
-        const {name} = filterDto;
-        const query = this.categoryRepository.createQueryBuilder('category');
-        let categories = [];
-        if (name) {
-
-            await query.andWhere('(category.name LIKE :name)', { name: `%${name}%` })
-            categories = await query.getMany();
-
-        } else {
-
-            categories = await query.getMany();
-        }
-        return categories;
+    public getFilterCategories(query: FindManyOptions<Category>): Promise<[Category[], number]> {
+            console.log(query)
+        return this.categoryRepository.findAndCount(query);
 
     }
 

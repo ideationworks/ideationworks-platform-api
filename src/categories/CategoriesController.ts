@@ -5,6 +5,10 @@ import { Category }                                          from './Category';
 import { DeleteResult } from 'typeorm';
 import { UpdateCategory } from './UpdateCategory';
 import { FilterCategoriesDto } from './FilterCategoriesDto';
+import {PaginationQuery} from "../_lib/common/pagination/PaginationQuery";
+import {Idea} from "../ideas/Idea";
+import {IdeaPaginationResponse} from "../ideas/IdeaPagenationResponse";
+import {CategoryPaginationResponse} from "./CategoryPaginationResponse";
 
 @ApiTags('categories')
 @Controller('/categories')
@@ -23,8 +27,22 @@ export class CategoriesController {
 
 
     @Get()
-    getCategories(@Query(ValidationPipe) filterDto: FilterCategoriesDto) : Promise<Category[]>{
-        return this.categoriesService.getFilterCategories(filterDto);
+    async getCategories(@Query() params: PaginationQuery<Category>) : Promise<CategoryPaginationResponse> {
+
+        const query = params.getFindManyOptions({
+
+            queryFields: ['name'],
+            relations: ['categories'],
+            sortBy: ['name'],
+            softDelete: true,
+
+        });
+
+        console.log(params)
+        const categories = await this.categoriesService.getFilterCategories(query);
+
+        return new CategoryPaginationResponse(categories, params);
+
     }
 
 
