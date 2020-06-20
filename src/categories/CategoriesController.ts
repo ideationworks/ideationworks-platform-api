@@ -64,15 +64,15 @@ export class CategoriesController {
 
     }
 
-    @Put()
-    public update(@Body() category: UpdateCategory) :Promise<UpdateCategory> {
+    @Put(':id')
+    public update(@Param('id') id: string, @Body() category: UpdateCategory) :Promise<UpdateCategory> {
 
-        return this.categoriesService.updateCategory(category);
+        return this.categoriesService.updateCategory(id, category);
 
     }
 
     @Delete(':id')
-    public delete(@Param('id', ParseUUIDPipe) id: string): Promise<DeleteResult>{
+    public delete(@Param('id', ParseUUIDPipe) id: string): Promise<void>{
 
         return this.categoriesService.deleteCategory(id);
 

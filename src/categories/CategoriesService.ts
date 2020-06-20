@@ -29,7 +29,7 @@ export class CategoriesService {
 
             } else {
 
-                reject(new ResourceNotFoundException('could not locate category'));
+                reject(new ResourceNotFoundException(`Category with id: ${id} not found`));
 
             }
 
@@ -56,13 +56,6 @@ export class CategoriesService {
         });
 
     }
-
-    public getAll(): Promise<Array<Category>> {
-
-        return this.categoryRepository.find();
-
-    }
-
     public async create(category: Category): Promise<Category> {
 
         return new Promise(async (resolve, reject) => {
@@ -81,53 +74,36 @@ export class CategoriesService {
 
     }
 
-    public async updateCategory(category: UpdateCategory): Promise<UpdateCategory> {
+    public async updateCategory(id: string, category:  Partial<Category>): Promise<Category> {
 
-        return new Promise(async (resolve, reject) => {
 
-            this.getById(category.id).catch(() => {
+        const categoryFound = this.getById(id)
 
-                reject(new ResourceNotFoundException('category does not exist'));
+        if(category.name) {
 
-            }).then(() => {
+            const categoryWithName = await this.categoryRepository.findOne({ where: { name: category.name } });
 
-                this.getByName(category.name).catch(async () => {
+            if(categoryWithName) {
 
-                    const updatedResult = await this.categoryRepository.update({ id: category.id }, category);
+                throw new ResourceAlreadyExistsException("You should enter an unique name for the category");
 
-                    if(updatedResult.raw.affectedRows > 0) {
-                        resolve(category);
-                    }
+            }else {
 
-                }).then(() => {
-
-                    reject(new ResourceAlreadyExistsException('Category name already exists'));
-                    
-                })
-
-            });
-
-        });
-
-    } 
-
-    public async deleteCategory(id: string) :Promise<DeleteResult> {
-
-        return new Promise(async (resolve, reject) => {
-
-            const affectedRows = await this.categoryRepository.delete({id});
-
-            if(affectedRows.affected === 0) {
-
-                reject(new ResourceNotFoundException('category doesnot exist'));
-
+                const updatedResult = await this.categoryRepository.update(id, category);
+                if (updatedResult && updatedResult.raw.affectedRows > 0) {
+                    return this.getById(id);
+                }
             }
-            else {
+        }else {
 
-                resolve(affectedRows);
-
+            const updatedResult = await this.categoryRepository.update(id, category);
+            if (updatedResult && updatedResult.raw.affectedRows > 0) {
+                return this.getById(id);
             }
-        });
+
+        }
+
+
     }
 
     public getCategories(query: FindManyOptions<Category>): Promise<[Category[], number]> {
