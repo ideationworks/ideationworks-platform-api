@@ -5,7 +5,7 @@ import { ResourceNotFoundException }      from '../_lib/exceptions/ResourceNotFo
 import { Category }                       from './Category';
 import { CategoryRepository }             from './CategoryRepository';
 import { resolve } from 'dns';
-import {DeleteResult, FindManyOptions} from 'typeorm';
+import {DeleteResult, FindManyOptions, FindOneOptions} from 'typeorm';
 import { UpdateCategory } from './UpdateCategory';
 import { FilterCategoriesDto } from './FilterCategoriesDto';
 import {Idea} from "../ideas/Idea";
@@ -17,7 +17,7 @@ export class CategoriesService {
 
     }
 
-    public getById(id: string): Promise<Category> {
+    public getById(id: string, options?: FindOneOptions<Category>): Promise<Category> {
 
         return new Promise(async (resolve, reject) => {
 
@@ -130,8 +130,8 @@ export class CategoriesService {
         });
     }
 
-    public getFilterCategories(query: FindManyOptions<Category>): Promise<[Category[], number]> {
-            console.log(query)
+    public getCategories(query: FindManyOptions<Category>): Promise<[Category[], number]> {
+
         return this.categoryRepository.findAndCount(query);
 
     }

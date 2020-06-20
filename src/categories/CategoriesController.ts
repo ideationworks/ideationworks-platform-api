@@ -9,6 +9,9 @@ import {PaginationQuery} from "../_lib/common/pagination/PaginationQuery";
 import {Idea} from "../ideas/Idea";
 import {IdeaPaginationResponse} from "../ideas/IdeaPagenationResponse";
 import {CategoryPaginationResponse} from "./CategoryPaginationResponse";
+import {FilterQuery} from "../_lib/common/queryFilter/FilterQuery";
+import {IdeaResponse} from "../ideas/IdeaResponse";
+import {CategoryResponse} from "./CategoryResponse";
 
 @ApiTags('categories')
 @Controller('/categories')
@@ -17,13 +20,6 @@ export class CategoriesController {
     public constructor(private categoriesService: CategoriesService) {
 
     }
-
-    // @Get()
-    // public getAll(): Promise<Array<Category>> {
-    //
-    //     return this.categoriesService.getAll();
-    //
-    // }
 
 
     @Get()
@@ -38,8 +34,7 @@ export class CategoriesController {
 
         });
 
-        console.log(params)
-        const categories = await this.categoriesService.getFilterCategories(query);
+        const categories = await this.categoriesService.getCategories(query);
 
         return new CategoryPaginationResponse(categories, params);
 
@@ -47,9 +42,18 @@ export class CategoriesController {
 
 
     @Get(':id')
-    public getById(@Param('id', ParseUUIDPipe) id: string): Promise<Category> {
+    public async getById(@Param('id', ParseUUIDPipe) id: string, @Query() params: FilterQuery<Category>): Promise<CategoryResponse> {
 
-        return this.categoriesService.getById(id);
+        const query = params.getFindOneOptions({
+
+            relations: ['categories'],
+            softDelete: true
+
+        });
+
+        const category = await this.categoriesService.getById(id, query);
+
+        return new CategoryResponse(category);
 
     }
 
