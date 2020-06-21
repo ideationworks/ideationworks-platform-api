@@ -4,11 +4,8 @@ import { ResourceAlreadyExistsException } from '../_lib/exceptions/ResourceAlrea
 import { ResourceNotFoundException }      from '../_lib/exceptions/ResourceNotFoundException';
 import { Category }                       from './Category';
 import { CategoryRepository }             from './CategoryRepository';
-import { resolve } from 'dns';
-import {DeleteResult, FindManyOptions, FindOneOptions} from 'typeorm';
-import { UpdateCategory } from './UpdateCategory';
-import { FilterCategoriesDto } from './FilterCategoriesDto';
-import {Idea} from "../ideas/Idea";
+import { FindManyOptions, FindOneOptions } from 'typeorm';
+
 
 @Injectable()
 export class CategoriesService {
@@ -17,23 +14,19 @@ export class CategoriesService {
 
     }
 
-    public getById(id: string, options?: FindOneOptions<Category>): Promise<Category> {
+    public async getById(id: string, options?: FindOneOptions<Category>): Promise<Category> {
 
-        return new Promise(async (resolve, reject) => {
+        const category = await this.categoryRepository.findOne(id, options);
 
-            const category = await this.categoryRepository.findOne({ where: { id } });
+        if (category) {
 
-            if (category) {
+            return category;
 
-                resolve(category);
+        } else {
 
-            } else {
+            throw new ResourceNotFoundException(`Category with id: ${id} not found`);
 
-                reject(new ResourceNotFoundException(`Category with id: ${id} not found`));
-
-            }
-
-        });
+        }
 
     }
 
@@ -74,10 +67,8 @@ export class CategoriesService {
 
     }
 
-    public async updateCategory(id: string, category:  Partial<Category>): Promise<Category> {
+    public async updateById(id: string, category:  Partial<Category>): Promise<Category> {
 
-
-        const categoryFound = this.getById(id)
 
         if(category.name) {
 
@@ -106,9 +97,21 @@ export class CategoriesService {
 
     }
 
-    public getCategories(query: FindManyOptions<Category>): Promise<[Category[], number]> {
+    public findAndCount(query: FindManyOptions<Category>): Promise<[Category[], number]> {
 
         return this.categoryRepository.findAndCount(query);
+
+    }
+
+    public async deleteById(id: string) :Promise<void> {
+
+        const affectedRows = await this.categoryRepository.delete({id});
+
+        if(affectedRows.affected === 0) {
+
+           throw new ResourceNotFoundException('category does not exist');
+
+        }
 
     }
 

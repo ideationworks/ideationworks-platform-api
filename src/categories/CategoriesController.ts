@@ -1,17 +1,24 @@
-import {Body, Controller, Get, Param, ParseUUIDPipe, Post, Put, ValidationPipe, Delete, Query} from '@nestjs/common';
-import { ApiTags }                                           from '@nestjs/swagger';
-import { CategoriesService }                                 from './CategoriesService';
-import { Category }                                          from './Category';
-import { DeleteResult } from 'typeorm';
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    ParseUUIDPipe,
+    Post,
+    Put,
+    Delete,
+    Query,
+    HttpCode, UseGuards
+} from '@nestjs/common';
+import {ApiResponse, ApiTags} from '@nestjs/swagger';
+import { CategoriesService }  from './CategoriesService';
+import { Category } from './Category';
 import { UpdateCategory } from './UpdateCategory';
-import { FilterCategoriesDto } from './FilterCategoriesDto';
 import {PaginationQuery} from "../_lib/common/pagination/PaginationQuery";
-import {Idea} from "../ideas/Idea";
-import {IdeaPaginationResponse} from "../ideas/IdeaPagenationResponse";
 import {CategoryPaginationResponse} from "./CategoryPaginationResponse";
 import {FilterQuery} from "../_lib/common/queryFilter/FilterQuery";
-import {IdeaResponse} from "../ideas/IdeaResponse";
 import {CategoryResponse} from "./CategoryResponse";
+import {PrincipalGuard} from "../_lib/PrincipalGuard";
 
 @ApiTags('categories')
 @Controller('/categories')
@@ -23,7 +30,10 @@ export class CategoriesController {
 
 
     @Get()
-    async getCategories(@Query() params: PaginationQuery<Category>) : Promise<CategoryPaginationResponse> {
+    @HttpCode(200)
+    @UseGuards(PrincipalGuard)
+    @ApiResponse({ status: 200, type: CategoryPaginationResponse })
+    async find(@Query() params: PaginationQuery<Category>) : Promise<CategoryPaginationResponse> {
 
         const query = params.getFindManyOptions({
 
@@ -34,7 +44,7 @@ export class CategoriesController {
 
         });
 
-        const categories = await this.categoriesService.getCategories(query);
+        const categories = await this.categoriesService.findAndCount(query);
 
         return new CategoryPaginationResponse(categories, params);
 
@@ -42,6 +52,9 @@ export class CategoriesController {
 
 
     @Get(':id')
+    @HttpCode(200)
+    @UseGuards(PrincipalGuard)
+    @ApiResponse({ status: 200, type: CategoryResponse })
     public async getById(@Param('id', ParseUUIDPipe) id: string, @Query() params: FilterQuery<Category>): Promise<CategoryResponse> {
 
         const query = params.getFindOneOptions({
@@ -58,23 +71,35 @@ export class CategoriesController {
     }
 
     @Post()
-    public create(@Body() category: Category): Promise<Category> {
+    @HttpCode(201)
+    @UseGuards(PrincipalGuard)
+    @ApiResponse({ status: 200, type: CategoryResponse })
+    public async create(@Body() category: Category): Promise<CategoryResponse> {
 
-        return this.categoriesService.create(category);
+        const createdCategory =  await this.categoriesService.create(category);
+        return  new CategoryResponse(createdCategory);
 
     }
 
     @Put(':id')
-    public update(@Param('id') id: string, @Body() category: UpdateCategory) :Promise<UpdateCategory> {
+    @HttpCode(200)
+    @UseGuards(PrincipalGuard)
+    @ApiResponse({ status: 200, type: CategoryResponse })
+    public async update(@Param('id') id: string, @Body() category: UpdateCategory) :Promise<CategoryResponse> {
 
-        return this.categoriesService.updateCategory(id, category);
+        const updatedCategory =  await this.categoriesService.updateById(id, category);
+        return new CategoryResponse(updatedCategory);
+
 
     }
 
     @Delete(':id')
-    public delete(@Param('id', ParseUUIDPipe) id: string): Promise<void>{
+    @HttpCode(204)
+    @UseGuards(PrincipalGuard)
+    @ApiResponse({ status: 204 })
+    public deleteById(@Param('id', ParseUUIDPipe) id: string): Promise<void>{
 
-        return this.categoriesService.deleteCategory(id);
+        return this.categoriesService.deleteById(id);
 
     }
 
