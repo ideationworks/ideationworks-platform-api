@@ -129,8 +129,8 @@ export class UsersService {
      *
      * @returns {Promise<string>}
      */
-    public async register(userRegister: UserRegister): Promise<User> {
-        
+    public async register(userRegister: Partial<User>): Promise<User> {
+
         //
         // Verify that the email is not already in use
         //
@@ -173,7 +173,7 @@ export class UsersService {
         Sendgrid.send(newUser.email, 'support@ideation.works', 'd-b380c9ca4c2e4cc9973e82bbc91af953', {
 
             subject: 'Confirm your ideation account!',
-            token: newUser.confirmToken
+            token: newUser.confirmToken,
 
         });
 

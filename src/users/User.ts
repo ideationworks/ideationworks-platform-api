@@ -58,8 +58,4 @@ export class User extends Base {
     @Column({nullable: true, length: 255})
     public confirmToken: string;
 
-    @OneToOne(type => UsersAuth)
-    @JoinColumn()
-    public userAuth: UsersAuth
-
 }

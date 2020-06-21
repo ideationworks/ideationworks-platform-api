@@ -34,6 +34,25 @@ JWT_EXPIRY    | Is use to set the life of the token expressed in seconds
 Name                 | Description
 ---------------------|--------------
 SENDGRID_API_KEY     | SendGrid Api key
+
+## AUTHENTICATION KEYS
+
+### Redirection URLS
+
+Name                 | Description
+---------------------|--------------
+SERVER_URL           | Server url used to the callback URL
+WEBSITE_URL          | Website Application URL used to redirect to site
+
+### GOOGLE
+
+Name                 | Description
+---------------------|--------------
+GOOGLE_CLIENT_ID     | Google Client ID
+GOOGLE_SECRET        | Google Client Secret
+
+
+
 # Query Filters
 
 A custom implementation to obtain and transform query parameters to TypeORM FindMany options is available through the class `FilterQuery<T>`.
