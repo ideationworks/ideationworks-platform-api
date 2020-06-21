@@ -1,11 +1,12 @@
 //extends = lets you imherit properties and methods from another class
 
-import { Column, Entity, ManyToMany, JoinTable, OneToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, JoinTable, OneToOne, JoinColumn, OneToMany, ManyToOne } from 'typeorm';
 import { Base } from '../_lib/Base';
 import { Tag } from '../tags/Tag';
 import { IdeaStatus } from './IdeaStatus';
 import { Category } from '../categories/Category';
 import { User } from '../users/User';
+import { IdeaVote } from './votes/IdeaVote';
 
 @Entity('ideas')
 export class Idea extends Base {
@@ -16,17 +17,17 @@ export class Idea extends Base {
     @Column({ length: 4000 })
     public description: string;
 
-    @Column()
+    @Column({ length: 36 })
     public ownerId: string;
 
-    @OneToOne(type => User)
+    @ManyToOne(type => User)
     @JoinColumn({ name: 'ownerId' })
     public owner: User;
 
     @Column()
     public categoryId: string;
 
-    @OneToOne(type => Category)
+    @ManyToOne(type => Category)
     @JoinColumn({ name: 'categoryId' })
     public category: Category;
 
@@ -49,4 +50,6 @@ export class Idea extends Base {
     @Column({ default: 0 })
     public votesUp?: number;
 
+    @OneToMany(() => IdeaVote, (ideaVote) => ideaVote.idea)
+    public votes: IdeaVote[]
 }
