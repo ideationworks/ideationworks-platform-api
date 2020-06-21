@@ -11,12 +11,15 @@ import { FilterQuery } from '../_lib/common/queryFilter/FilterQuery';
 import { IdeaResponse } from './IdeaResponse';
 import { UpdateIdea } from './UpadateIdea';
 import { PaginationQuery } from '../_lib/common/pagination/PaginationQuery';
+import { IdeaVotesService } from './votes/IdeaVotesService';
+import { ParseBoolPipe } from '../_lib/pipe/ParseBoolPipe';
+import { IdeaUserVote } from './IdeaUserVote';
 
 @ApiTags('ideas')
 @Controller('/ideas')
 export class IdeasController {
 
-    public constructor(private ideasService: IdeasService) {
+    public constructor(private ideasService: IdeasService, private ideaVotesService: IdeaVotesService) {
 
     }
 
@@ -36,7 +39,13 @@ export class IdeasController {
     @HttpCode(200)
     @UseGuards(PrincipalGuard)
     @ApiResponse({ status: 200, type: IdeaPaginationResponse })
-    public async find(@Query() params: PaginationQuery<Idea>): Promise<IdeaPaginationResponse> {
+    public async find(
+
+        @Query() params: PaginationQuery<Idea>,
+        @Principal() user: User,
+        @Query('userVote', ParseBoolPipe) userVote: boolean,
+
+    ): Promise<IdeaPaginationResponse> {
 
         const query = params.getFindManyOptions({
 
@@ -47,9 +56,11 @@ export class IdeasController {
 
         });
 
-        const ideas = await this.ideasService.findAndCount(query);
+        let [ideas, count] = await this.ideasService.findAndCount(query);
 
-        return new IdeaPaginationResponse(ideas, params);
+        if (userVote) ideas = await this.ideaVotesService.getIdeasUserVote(user.id, ideas);
+
+        return new IdeaPaginationResponse([ideas, count], params);
 
     }
 
@@ -58,7 +69,14 @@ export class IdeasController {
     @HttpCode(200)
     @UseGuards(PrincipalGuard)
     @ApiResponse({ status: 200, type: IdeaResponse })
-    public async getById(@Param('id') id: string, @Query() params: FilterQuery<Idea>): Promise<IdeaResponse> {
+    public async getById(
+
+        @Param('id') id: string,
+        @Query() params: FilterQuery<Idea>,
+        @Principal() user: User,
+        @Query('userVote', new ParseBoolPipe()) userVote: boolean,
+
+    ): Promise<IdeaResponse> {
 
         const query = params.getFindOneOptions({
 
@@ -67,9 +85,11 @@ export class IdeasController {
 
         });
 
-        const tag = await this.ideasService.getById(id, query);
+        let idea: IdeaUserVote = await this.ideasService.getById(id, query);
+        
+        if (userVote) idea = await this.ideaVotesService.getIdeaUserVote(user.id, idea);
 
-        return new IdeaResponse(tag);
+        return new IdeaResponse(idea);
 
     }
 
