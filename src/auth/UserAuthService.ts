@@ -1,13 +1,14 @@
+import { OAuthUser } from './OAuthUser';
 import { Random } from './../_lib/common/Random';
 import { UsersService } from './../users/UsersService';
-import { GoogleUser } from './GoogleUser';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersAuthRepository } from './UsersAuthRepository';
 import { User } from '../users/User';
 
 @Injectable()
-export class GoogleService {
+export class UserAuthService {
+
     public constructor(
 
         @InjectRepository(UsersAuthRepository) private userAuthRepository: UsersAuthRepository,
@@ -16,15 +17,19 @@ export class GoogleService {
     ) { }
 
     /**
-     * Login Function to authenticate with google
-     * @param user google user
+     * Login Function to authenticate with a third party service
+     * @param user oauth user
      */
-    public async authenticate(googleUser: GoogleUser): Promise<User> {
+    public async authenticate(oAuthUser: OAuthUser): Promise<User> {
 
-        if (!googleUser) throw new BadRequestException('No Google User provided');
+        if (!oAuthUser) {
+
+            throw new BadRequestException(`No user found for the provider ${oAuthUser.provider}`);
+
+        }
 
         // Try to find a user already authenticated
-        const authUserFound = await this.userAuthRepository.findOne({ where: { authId: googleUser.id, provider: 'google' } });
+        const authUserFound = await this.userAuthRepository.findOne({ where: { authId: oAuthUser.id, provider: oAuthUser.provider } });
 
         // If the user is found that means that the user is already registered
         if (authUserFound) {
@@ -38,7 +43,7 @@ export class GoogleService {
         // if that the case we link the accounts
         //
 
-        let user = await this.usersService.getByEmail(googleUser.email);
+        let user = await this.usersService.getByEmail(oAuthUser.email);
 
         //
         // If no user is found we need to register a new user for that since we don't have
@@ -50,10 +55,10 @@ export class GoogleService {
 
             const userToRegister: Partial<User> = {
 
-                email: googleUser.email,
-                firstName: googleUser.firstName,
-                lastName: googleUser.lastName,
-                displayName: `${googleUser.firstName} ${googleUser.lastName}`,
+                email: oAuthUser.email,
+                firstName: oAuthUser.firstName,
+                lastName: oAuthUser.lastName,
+                displayName: oAuthUser.displayName,
                 password: Random.getRandomCryptoString(50),
 
             };
@@ -64,10 +69,10 @@ export class GoogleService {
 
         await this.userAuthRepository.save({
 
-            authId: googleUser.id,
-            email: googleUser.email,
+            authId: oAuthUser.id,
+            email: oAuthUser.email,
             userId: user.id,
-            provider: 'google',
+            provider: oAuthUser.provider,
 
         });
 

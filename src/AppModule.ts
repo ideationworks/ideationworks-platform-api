@@ -23,16 +23,19 @@ import { UserRepository }          from './users/UserRepository';
 import { UsersController }         from './users/UsersController';
 import { UsersService }            from './users/UsersService';
 import { AuthenticationService }   from './_lib/authentication/AuthenticationService';
-import { TagsController}           from './tags/TagsController';
+import { TagsController }          from './tags/TagsController';
 
 import { TagsService }             from './tags/TagsService';
 import { Tag }                     from './tags/Tag';
 import { TagRepository }           from './tags/TagRepository';
-import { GoogleController } from './auth/GoogleController';
-import {GoogleService } from './auth/GoogleService';
-import { GoogleStrategy } from './auth/google.strategy';
-import {UsersAuthRepository} from './auth/UsersAuthRepository';
-import {UsersAuth} from './auth/UsersAuth';
+import { UserAuthService }         from './auth/UserAuthService';
+import { GithubController }        from './auth/github/GithubController';
+import { GoogleController }        from './auth/google/GoogleController';
+import { UsersAuthRepository }     from './auth/UsersAuthRepository';
+import { UsersAuth }               from './auth/UsersAuth';
+import { GithubStrategy }          from './auth/github/GithubStrategy';
+import { GoogleStrategy }          from './auth/google/GoogleStrategy';
+
 @Module({
 
     imports: [
@@ -86,6 +89,7 @@ import {UsersAuth} from './auth/UsersAuth';
         UsersController,
         TagsController,
         GoogleController,
+        GithubController,
 
     ],
 
@@ -98,8 +102,9 @@ import {UsersAuth} from './auth/UsersAuth';
         UsersService,
         AuthenticationService,
         TagsService,
-        GoogleService,
+        UserAuthService,
         GoogleStrategy,
+        GithubStrategy,
 
     ],
 

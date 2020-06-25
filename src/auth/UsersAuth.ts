@@ -11,6 +11,7 @@ export class UsersAuth extends Base {
     public email: string;
 
     @IsNotEmpty()
+    @Index()
     @Column({ nullable: false })
     public authId: string;
 
@@ -23,7 +24,7 @@ export class UsersAuth extends Base {
     public user: User;
 
     @Index()
-    @Column({ length: 50})
+    @Column({ length: 50 })
     public provider: string;
 
 }

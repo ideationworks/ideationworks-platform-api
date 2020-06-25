@@ -1,14 +1,14 @@
-import { GoogleUser } from './GoogleUser';
-import { UserReq } from './../_lib/decorators/UserReq';
+import { UserAuthService } from '../UserAuthService';
+import { UserReq } from '../../_lib/decorators/UserReq';
 import { Controller, Get, UseGuards, Res } from '@nestjs/common';
-import { GoogleService } from './GoogleService';
 import { AuthGuard } from '@nestjs/passport';
-import { AuthenticationService } from '../_lib/authentication/AuthenticationService';
+import { AuthenticationService } from '../../_lib/authentication/AuthenticationService';
 import { Response } from 'express';
+import { OAuthUser } from '../OAuthUser';
 
 @Controller('auth')
 export class GoogleController {
-    constructor(private readonly googleService: GoogleService, private authenticationService: AuthenticationService) { }
+    constructor(private readonly userAuthService: UserAuthService, private authenticationService: AuthenticationService) { }
 
     @Get('/google')
     @UseGuards(AuthGuard('google'))
@@ -16,9 +16,9 @@ export class GoogleController {
 
     @Get('/google/callback')
     @UseGuards(AuthGuard('google'))
-    async googleAuthRedirect(@UserReq() googleUser: GoogleUser, @Res() res: Response) : Promise<void>{
+    async googleAuthRedirect(@UserReq() googleUser: OAuthUser, @Res() res: Response): Promise<void> {
 
-        const user = await this.googleService.authenticate(googleUser);
+        const user = await this.userAuthService.authenticate(googleUser);
 
         const jwt = this.authenticationService.getSignedJWT({ id: user.id });
 
