@@ -52,6 +52,14 @@ GOOGLE_CLIENT_ID     | Google Client ID
 GOOGLE_SECRET        | Google Client Secret
 
 
+### GITHUB
+
+Name                 | Description
+---------------------|--------------
+GITHUB_CLIENT_ID     | Github Client ID
+GITHUB_CLIENT_SECRET | Github Client Secret
+
+
 
 # Query Filters
 
