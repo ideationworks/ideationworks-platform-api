@@ -1,3 +1,5 @@
+import { FacebookStrategy } from './auth/facebook/FacebookStrategy';
+import { FacebookController } from './auth/facebook/FacebookController';
 /* tslint:disable:import-spacing */
 import { Module }                  from '@nestjs/common';
 import { JwtModule }               from '@nestjs/jwt';
@@ -90,6 +92,7 @@ import { GoogleStrategy }          from './auth/google/GoogleStrategy';
         TagsController,
         GoogleController,
         GithubController,
+        FacebookController,
 
     ],
 
@@ -105,6 +108,7 @@ import { GoogleStrategy }          from './auth/google/GoogleStrategy';
         UserAuthService,
         GoogleStrategy,
         GithubStrategy,
+        FacebookStrategy,
 
     ],
 

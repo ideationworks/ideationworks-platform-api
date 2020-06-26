@@ -28,6 +28,15 @@ export class UserAuthService {
 
         }
 
+        //
+        // Email is needed to register users, this permision should be granted to procceed to authenticate a user
+        //
+        if (!oAuthUser.email) {
+
+            throw new BadRequestException(`No email found for the provider ${oAuthUser.provider}`);
+
+        }
+
         // Try to find a user already authenticated
         const authUserFound = await this.userAuthRepository.findOne({ where: { authId: oAuthUser.id, provider: oAuthUser.provider } });
 
