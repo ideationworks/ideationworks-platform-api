@@ -60,6 +60,13 @@ GITHUB_CLIENT_ID     | Github Client ID
 GITHUB_CLIENT_SECRET | Github Client Secret
 
 
+### FACEBOOK
+
+Name                 | Description
+---------------------|--------------
+FACEBOOK_APP_ID      | Facebook App Id
+FACEBOOK_APP_SECRET  | Facebook App Secret
+
 
 # Query Filters
 
