@@ -42,7 +42,7 @@ import { GoogleStrategy }          from './auth/google/GoogleStrategy';
 
     imports: [
 
-        JwtModule.register({ secret: 'changeme' }),
+        JwtModule.register({ secret: process.env.JWT_TOKEN }),
 
         TypeOrmModule.forRoot({
 
