@@ -22,6 +22,7 @@ import { UserRegister } from './UserRegister';
 import { UsersService } from './UsersService';
 import { AuthenticationService } from '../_lib/authentication/AuthenticationService';
 import { UserRegisterResponse } from './Response/UserRegisterResponse';
+import { UserResponse } from './Response/UserResponse';
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -92,12 +93,14 @@ export class UsersController {
      *
      * @returns {Promise<User>}
      */
-    @Get('/my')
+    @Get('/me')
     @UseGuards(PrincipalGuard)
     @UseInterceptors(ClassSerializerInterceptor)
-    public async getMyProfile(@Principal() principal: User): Promise<User> {
+    public async getMyProfile(@Principal() principal: User): Promise<UserResponse> {
 
-        return this.usersService.getUserById(principal.id);
+        const user = await this.usersService.getUserById(principal.id);
+
+        return new UserResponse(user);
 
     }
 
@@ -109,7 +112,7 @@ export class UsersController {
      * @returns {Promise<boolean>}
      */
     @Post('/reset/send')
-    public forgotSend(@Query('email')  email: string): Promise<boolean> {
+    public forgotSend(@Query('email') email: string): Promise<boolean> {
 
         return this.usersService.resetSend(email);
 
