@@ -27,8 +27,19 @@ import { PaginationQuery } from '../_lib/common/pagination/PaginationQuery';
 @Controller('/tags')
 export class TagsController {
 
-
     public constructor(private tagsService: TagsService) {
+
+    }
+
+    @Put()
+    @HttpCode(201)
+    @UseGuards(PrincipalGuard)
+    @ApiResponse({ status: 200, type: TagResponse })
+    public async findOrcreate(@Body() tag: CreateTag): Promise<TagResponse> {
+
+        const newTag = await this.tagsService.findOrCreate(tag);
+
+        return new TagResponse(newTag);
 
     }
 
@@ -38,7 +49,7 @@ export class TagsController {
     @ApiResponse({ status: 200, type: TagResponse })
     public async create(@Body() tag: CreateTag): Promise<TagResponse> {
 
-        const newTag = await this.tagsService.create(plainToClass(Tag, tag));
+        const newTag = await this.tagsService.create(tag);
 
         return new TagResponse(newTag);
 
