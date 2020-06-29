@@ -87,4 +87,18 @@ export class TagsService implements CrudServiceBase<Tag>{
 
     }
 
+    public async findOrCreate(tag: Partial<Tag>) {
+
+        const tagFound = await this.tagRepository.findOne({ name: tag.name });
+
+        if (tagFound) {
+
+            return tagFound;
+
+        }
+
+        return this.create(tag);
+
+    }
+
 }

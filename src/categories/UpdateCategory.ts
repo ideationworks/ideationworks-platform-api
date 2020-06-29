@@ -8,7 +8,7 @@ import { Category } from './Category';
 export class UpdateCategory extends Base  {
 
     @ApiProperty()
-    @IsNotEmpty()
+    @IsOptional()
     @Column({ nullable: false })
     public name: string;
 

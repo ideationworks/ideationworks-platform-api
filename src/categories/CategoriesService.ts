@@ -4,9 +4,8 @@ import { ResourceAlreadyExistsException } from '../_lib/exceptions/ResourceAlrea
 import { ResourceNotFoundException }      from '../_lib/exceptions/ResourceNotFoundException';
 import { Category }                       from './Category';
 import { CategoryRepository }             from './CategoryRepository';
-import { resolve } from 'dns';
-import { DeleteResult } from 'typeorm';
-import { UpdateCategory } from './UpdateCategory';
+import { FindManyOptions, FindOneOptions } from 'typeorm';
+
 
 @Injectable()
 export class CategoriesService {
@@ -15,23 +14,19 @@ export class CategoriesService {
 
     }
 
-    public getById(id: string): Promise<Category> {
+    public async getById(id: string, options?: FindOneOptions<Category>): Promise<Category> {
 
-        return new Promise(async (resolve, reject) => {
+        const category = await this.categoryRepository.findOne(id, options);
 
-            const category = await this.categoryRepository.findOne({ where: { id } });
+        if (category) {
 
-            if (category) {
+            return category;
 
-                resolve(category);
+        } else {
 
-            } else {
+            throw new ResourceNotFoundException(`Category with id: ${id} not found`);
 
-                reject(new ResourceNotFoundException('could not locate category'));
-
-            }
-
-        });
+        }
 
     }
 
@@ -54,13 +49,6 @@ export class CategoriesService {
         });
 
     }
-
-    public getAll(): Promise<Array<Category>> {
-
-        return this.categoryRepository.find();
-
-    }
-
     public async create(category: Category): Promise<Category> {
 
         return new Promise(async (resolve, reject) => {
@@ -79,53 +67,52 @@ export class CategoriesService {
 
     }
 
-    public async updateCategory(category: UpdateCategory): Promise<UpdateCategory> {
+    public async updateById(id: string, category:  Partial<Category>): Promise<Category> {
 
-        return new Promise(async (resolve, reject) => {
 
-            this.getById(category.id).catch(() => {
+        if(category.name) {
 
-                reject(new ResourceNotFoundException('category does not exist'));
+            const categoryWithName = await this.categoryRepository.findOne({ where: { name: category.name } });
 
-            }).then(() => {
+            if(categoryWithName) {
 
-                this.getByName(category.name).catch(async () => {
+                throw new ResourceAlreadyExistsException("You should enter an unique name for the category");
 
-                    const updatedResult = await this.categoryRepository.update({ id: category.id }, category);
+            }else {
 
-                    if(updatedResult.raw.affectedRows > 0) {
-                        resolve(category);
-                    }
-
-                }).then(() => {
-
-                    reject(new ResourceAlreadyExistsException('Category name already exists'));
-                    
-                })
-
-            });
-
-        });
-
-    } 
-
-    public async deleteCategory(id: string) :Promise<DeleteResult> {
-
-        return new Promise(async (resolve, reject) => {
-
-            const affectedRows = await this.categoryRepository.delete({id});
-
-            if(affectedRows.affected === 0) {
-
-                reject(new ResourceNotFoundException('category doesnot exist'));
-
+                const updatedResult = await this.categoryRepository.update(id, category);
+                if (updatedResult && updatedResult.raw.affectedRows > 0) {
+                    return this.getById(id);
+                }
             }
-            else {
+        }else {
 
-                resolve(affectedRows);
-
+            const updatedResult = await this.categoryRepository.update(id, category);
+            if (updatedResult && updatedResult.raw.affectedRows > 0) {
+                return this.getById(id);
             }
-        });
+
+        }
+
+
+    }
+
+    public findAndCount(query: FindManyOptions<Category>): Promise<[Category[], number]> {
+
+        return this.categoryRepository.findAndCount(query);
+
+    }
+
+    public async deleteById(id: string) :Promise<void> {
+
+        const affectedRows = await this.categoryRepository.delete({id});
+
+        if(affectedRows.affected === 0) {
+
+           throw new ResourceNotFoundException('category does not exist');
+
+        }
+
     }
 
 }

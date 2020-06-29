@@ -132,7 +132,7 @@ export class UsersService {
      *
      * @returns {Promise<string>}
      */
-    public async register(userRegister: UserRegister): Promise<User> {
+    public async register(userRegister: Partial<User>): Promise<User> {
 
         //
         // Verify that the email is not already in use

@@ -8,8 +8,6 @@ import { CrudServiceBase } from '../_lib/common/crud/CrudServiceBase';
 import { IdeaStatus } from './IdeaStatus';
 import { TagsService } from '../tags/TagsService';
 import { CategoriesService } from '../categories/CategoriesService';
-import { Category } from 'src/categories/Category';
-
 
 @Injectable()
 export class IdeasService implements CrudServiceBase<Idea>{

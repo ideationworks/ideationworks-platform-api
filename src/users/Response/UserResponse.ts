@@ -1,22 +1,27 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Expose } from "class-transformer";
+import { ApiProperty } from '@nestjs/swagger';
+import { Expose } from 'class-transformer';
+import { BaseResponse } from '../../_lib/common/BaseResponse';
 
-export class UserResponse {
-
-    @ApiProperty()
-    @Expose()
-    id: String;
+export class UserResponse extends BaseResponse {
 
     @ApiProperty()
     @Expose()
-    displayName: String;
+    id: string;
 
     @ApiProperty()
     @Expose()
-    firstName: String;
+    displayName: string;
 
     @ApiProperty()
     @Expose()
-    lastName: String;
-    
+    firstName: string;
+
+    @ApiProperty()
+    @Expose()
+    lastName: string;
+
+    @ApiProperty()
+    @Expose()
+    email: string;
+
 }

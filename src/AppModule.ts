@@ -1,3 +1,6 @@
+import { FacebookStrategy } from './auth/facebook/FacebookStrategy';
+import { FacebookController } from './auth/facebook/FacebookController';
+/* tslint:disable:import-spacing */
 import { Module }                  from '@nestjs/common';
 import { JwtModule }               from '@nestjs/jwt';
 import { TypeOrmModule }           from '@nestjs/typeorm';
@@ -22,20 +25,24 @@ import { UserRepository }          from './users/UserRepository';
 import { UsersController }         from './users/UsersController';
 import { UsersService }            from './users/UsersService';
 import { AuthenticationService }   from './_lib/authentication/AuthenticationService';
-import { TagsController}           from './tags/TagsController';
+import { TagsController }          from './tags/TagsController';
+
 import { TagsService }             from './tags/TagsService';
 import { Tag }                     from './tags/Tag';
 import { TagRepository }           from './tags/TagRepository';
-import { GoogleController } from './auth/GoogleController';
-import {GoogleService } from './auth/GoogleService';
-import { GoogleStrategy } from './auth/google.strategy';
-import {Users_auth} from './auth/users_auth';
-import {Users_authRepository} from './auth/Users_authRepository'
+import { UserAuthService }         from './auth/UserAuthService';
+import { GithubController }        from './auth/github/GithubController';
+import { GoogleController }        from './auth/google/GoogleController';
+import { UsersAuthRepository }     from './auth/UsersAuthRepository';
+import { UsersAuth }               from './auth/UsersAuth';
+import { GithubStrategy }          from './auth/github/GithubStrategy';
+import { GoogleStrategy }          from './auth/google/GoogleStrategy';
+
 @Module({
 
     imports: [
 
-        JwtModule.register({ secret: 'changeme' }),
+        JwtModule.register({ secret: process.env.JWT_TOKEN }),
 
         TypeOrmModule.forRoot({
 
@@ -55,9 +62,9 @@ import {Users_authRepository} from './auth/Users_authRepository'
                 User,
                 Organization,
                 Tag,
-                Users_auth
+                UsersAuth,
 
-            ]
+            ],
 
         }),
 
@@ -69,9 +76,9 @@ import {Users_authRepository} from './auth/Users_authRepository'
             UserRepository,
             OrganizationRepository,
             TagRepository,
-            Users_authRepository
-            
-        ])
+            UsersAuthRepository,
+
+        ]),
 
     ],
 
@@ -83,7 +90,9 @@ import {Users_authRepository} from './auth/Users_authRepository'
         OrganizationsController,
         UsersController,
         TagsController,
-        GoogleController
+        GoogleController,
+        GithubController,
+        FacebookController,
 
     ],
 
@@ -96,8 +105,10 @@ import {Users_authRepository} from './auth/Users_authRepository'
         UsersService,
         AuthenticationService,
         TagsService,
-        GoogleService,
-        GoogleStrategy
+        UserAuthService,
+        GoogleStrategy,
+        GithubStrategy,
+        FacebookStrategy,
 
     ],
 

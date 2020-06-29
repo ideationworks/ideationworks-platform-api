@@ -1,7 +1,7 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import { JWTResponse } from "./JWTResponse";
-import { JWTData } from "./JWTData";
+import { JWTResponse } from './JWTResponse';
+import { JWTData } from './JWTData';
 
 
 const JWT_TOKEN = process.env.JWT_TOKEN || 'dev-jwt-token';
