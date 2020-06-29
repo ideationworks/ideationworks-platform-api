@@ -132,6 +132,7 @@ export class UsersService {
      *
      * @returns {Promise<string>}
      */
+
     public async register(userRegister: Partial<User>): Promise<User> {
 
         //
