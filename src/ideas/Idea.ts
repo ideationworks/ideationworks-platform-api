@@ -1,12 +1,11 @@
-//extends = lets you imherit properties and methods from another class
-
-import { Column, Entity, ManyToMany, JoinTable, OneToOne, JoinColumn, OneToMany, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToMany, JoinTable, JoinColumn, OneToMany, ManyToOne } from 'typeorm';
 import { Base } from '../_lib/Base';
 import { Tag } from '../tags/Tag';
 import { IdeaStatus } from './IdeaStatus';
 import { Category } from '../categories/Category';
 import { User } from '../users/User';
 import { IdeaVote } from './votes/IdeaVote';
+import { IdeaComment } from './comments/IdeaComment';
 
 @Entity('ideas')
 export class Idea extends Base {
@@ -32,7 +31,7 @@ export class Idea extends Base {
     public category: Category;
 
     @Column()
-    public status: IdeaStatus
+    public status: IdeaStatus;
 
     @ManyToMany(type => Tag, tag => tag.ideas)
     @JoinTable({
@@ -51,5 +50,9 @@ export class Idea extends Base {
     public votesUp?: number;
 
     @OneToMany(() => IdeaVote, (ideaVote) => ideaVote.idea)
-    public votes: IdeaVote[]
+    public votes: IdeaVote[];
+
+    @OneToMany(() => IdeaComment, (ideaComment) => ideaComment.idea)
+    public comments: IdeaComment[];
+
 }

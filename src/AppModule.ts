@@ -1,5 +1,3 @@
-import { FacebookStrategy } from './auth/facebook/FacebookStrategy';
-import { FacebookController } from './auth/facebook/FacebookController';
 /* tslint:disable:import-spacing */
 import { Module }                  from '@nestjs/common';
 import { JwtModule }               from '@nestjs/jwt';
@@ -26,7 +24,6 @@ import { UsersController }         from './users/UsersController';
 import { UsersService }            from './users/UsersService';
 import { AuthenticationService }   from './_lib/authentication/AuthenticationService';
 import { TagsController }          from './tags/TagsController';
-
 import { TagsService }             from './tags/TagsService';
 import { Tag }                     from './tags/Tag';
 import { TagRepository }           from './tags/TagRepository';
@@ -37,7 +34,12 @@ import { UsersAuthRepository }     from './auth/UsersAuthRepository';
 import { UsersAuth }               from './auth/UsersAuth';
 import { GithubStrategy }          from './auth/github/GithubStrategy';
 import { GoogleStrategy }          from './auth/google/GoogleStrategy';
-
+import { IdeaCommentService }      from './ideas/comments/IdeaCommentService';
+import { IdeaCommentController }   from './ideas/comments/IdeaCommentController';
+import { IdeaCommentRepository }   from './ideas/comments/IdeaCommentRepository';
+import { IdeaComment }             from './ideas/comments/IdeaComment';
+import { FacebookStrategy }        from './auth/facebook/FacebookStrategy';
+import { FacebookController }      from './auth/facebook/FacebookController';
 @Module({
 
     imports: [
@@ -54,6 +56,7 @@ import { GoogleStrategy }          from './auth/google/GoogleStrategy';
             database: process.env.DB_NAME || 'ideationworks',
             synchronize: process.env.DB_SYNCHRONIZE === 'true' || true,
             keepConnectionAlive: true,
+            timezone: 'Z',
             entities: [
 
                 Category,
@@ -63,6 +66,7 @@ import { GoogleStrategy }          from './auth/google/GoogleStrategy';
                 Organization,
                 Tag,
                 UsersAuth,
+                IdeaComment,
 
             ],
 
@@ -77,6 +81,7 @@ import { GoogleStrategy }          from './auth/google/GoogleStrategy';
             OrganizationRepository,
             TagRepository,
             UsersAuthRepository,
+            IdeaCommentRepository,
 
         ]),
 
@@ -93,6 +98,7 @@ import { GoogleStrategy }          from './auth/google/GoogleStrategy';
         GoogleController,
         GithubController,
         FacebookController,
+        IdeaCommentController,
 
     ],
 
@@ -109,6 +115,7 @@ import { GoogleStrategy }          from './auth/google/GoogleStrategy';
         GoogleStrategy,
         GithubStrategy,
         FacebookStrategy,
+        IdeaCommentService,
 
     ],
 
