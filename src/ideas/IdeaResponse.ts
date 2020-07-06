@@ -1,12 +1,12 @@
-import { BaseResponse } from "../_lib/common/BaseResponse";
-import { ApiProperty } from "@nestjs/swagger";
-import { Expose, Type } from "class-transformer";
-import { IdeaStatus } from "./IdeaStatus";
-import { TagResponse } from "../tags/TagResponse";
-import { CategoryResponse } from "../categories/CategoryResponse";
-import { UserResponse } from "../users/Response/UserResponse";
-import { IdeaVoteResponse } from "./votes/IdeaVoteResponse";
-
+import { IdeaCommentResponse } from './comments/IdeaCommentResponse';
+import { BaseResponse } from '../_lib/common/BaseResponse';
+import { ApiProperty } from '@nestjs/swagger';
+import { Expose, Type } from 'class-transformer';
+import { IdeaStatus } from './IdeaStatus';
+import { TagResponse } from '../tags/TagResponse';
+import { CategoryResponse } from '../categories/CategoryResponse';
+import { UserResponse } from '../users/Response/UserResponse';
+import { IdeaVoteResponse } from './votes/IdeaVoteResponse';
 export class IdeaResponse extends BaseResponse {
 
     @ApiProperty()
@@ -28,7 +28,7 @@ export class IdeaResponse extends BaseResponse {
     @ApiProperty()
     @Expose()
     @Type(() => UserResponse)
-    owner: UserResponse
+    owner: UserResponse;
 
     @ApiProperty()
     @Expose()
@@ -59,6 +59,19 @@ export class IdeaResponse extends BaseResponse {
     @ApiProperty()
     @Expose()
     @Type(() => IdeaVoteResponse)
-    userVote: IdeaVoteResponse
-    
+    userVote: IdeaVoteResponse;
+
+    @ApiProperty()
+    @Expose()
+    stampCreated: Date;
+
+    @ApiProperty()
+    @Expose()
+    stampUpdated: Date;
+
+    @ApiProperty({ type: () => IdeaCommentResponse })
+    @Expose()
+    @Type(() => IdeaCommentResponse)
+    comments: IdeaCommentResponse[];
+
 }

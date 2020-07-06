@@ -36,7 +36,8 @@ export class IdeaVotesController {
 
         const vote = await this.ideaVotesService.up(user, ideaId);
 
-        return new IdeaVoteResponse(vote)
+        return new IdeaVoteResponse(vote);
+
     }
 
     /**

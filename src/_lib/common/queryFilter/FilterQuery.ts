@@ -30,6 +30,15 @@ export class FilterQuery<T> {
     @Transform((value: string) => value && value.split(','))
     relations?: string[]
 
+    /**
+     * Function to add a custom query to be added to the params before get finde options is called
+     * @param query Add a query to the params 
+     */
+    public addQuerySearch(query: QueryFilterSearch<T>) {
+
+        this.q = (this.q) ? { ...this.q, ...query } : query;
+
+    }
 
     /**
      * 
@@ -66,8 +75,11 @@ export class FilterQuery<T> {
 
             });
 
-            if (foundFields.length > 0) query.select = foundFields;
+            if (foundFields.length > 0) {
 
+                query.select = [... new Set(foundFields)];
+
+            }
         }
         /**
          * 
@@ -86,7 +98,11 @@ export class FilterQuery<T> {
 
             });
 
-            if (foundRelations.length > 0) query.relations = foundRelations;
+            if (foundRelations.length > 0) {
+
+                query.relations = [... new Set(foundRelations)]
+
+            }
 
         }
 

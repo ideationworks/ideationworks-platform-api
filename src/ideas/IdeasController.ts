@@ -50,7 +50,7 @@ export class IdeasController {
         const query = params.getFindManyOptions({
 
             queryFields: ['title', 'status', 'tags'],
-            relations: ['tags', 'owner', 'category'],
+            relations: ['tags', 'owner', 'category', 'comments', 'comments.user'],
             sortBy: ['title'],
             softDelete: true,
 
@@ -80,13 +80,13 @@ export class IdeasController {
 
         const query = params.getFindOneOptions({
 
-            relations: ['owner', 'tags', 'category'],
-            softDelete: true
+            relations: ['owner', 'tags', 'category', 'comments', 'comments.user'],
+            softDelete: true,
 
         });
 
         let idea: IdeaUserVote = await this.ideasService.getById(id, query);
-        
+
         if (userVote) idea = await this.ideaVotesService.getIdeaUserVote(user.id, idea);
 
         return new IdeaResponse(idea);

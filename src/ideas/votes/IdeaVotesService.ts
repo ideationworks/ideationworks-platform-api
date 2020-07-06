@@ -57,7 +57,7 @@ export class IdeaVotesService {
 
         const ideaUpdated = await this.ideasService.updateById(ideaId, count);
 
-        return { ...ideaVote, user, idea: ideaUpdated };
+        return { ...response, user, idea: ideaUpdated };
 
     }
 
